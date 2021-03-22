@@ -5,9 +5,10 @@ import constants from "./constants";
 import gameSettings from "./game-settings";
 import { generateResult, getSettlementResult } from "./helpers/result-helper";
 import LotteryContainerRegistry from "./lottery-container-registry";
+import LotteryGameDefinition from "./lottery-game-definition";
 
 const run = async () => {
-    const definition = new Core.GameDefinition(gameSettings, generateResult, getSettlementResult);
+    const definition = new LotteryGameDefinition(gameSettings, generateResult, getSettlementResult);
     const gameData = new Core.GameData(gameSettings.durations.wholeRound, constants.resetTotalBets);
     const container = new LotteryContainerRegistry().register(appConfigs, definition, gameData);
     const app = new Core.BaseGameApp(container);

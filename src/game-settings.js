@@ -6,7 +6,7 @@ export default {
     placingBets: 40,
     lockingBet: 5,
   },
-  choices: [
+  betTypes: [
     "4Sets",
     "special",
     "head",
@@ -17,5 +17,6 @@ export default {
     "parlay4",
     "others",
   ],
+  choices: [],
   defaultBetTracks: {},
 };

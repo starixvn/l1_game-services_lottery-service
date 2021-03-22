@@ -31,6 +31,6 @@ const schema = new mongoose.Schema({
   siteId: { type: String },
 });
 
-const LotteryBetLogs = mongoose.model("lottery_cuocs", schema);
+const LotteryBetLogs = mongoose.model("lottery_cuoc", schema);
 
 export default LotteryBetLogs;
