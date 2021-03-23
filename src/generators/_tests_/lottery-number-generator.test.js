@@ -31,7 +31,7 @@ describe("lottery number generate test", () => {
         });
     });
 
-    it("total of tens digits should be correct", () => {
+    it("total of two digit numbers should be correct", () => {
         // arrange
         const generator = new LotteryNumberGenerator(generatorDefinition, RandomHelper);
 

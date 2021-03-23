@@ -21,18 +21,15 @@ export default class LotteryNumberGenerator {
             for (let index = 0; index < total; index++) {
                 const number = this.randomHelper.randomNumber(max);
                 const formatNumber = this.formatNumber(number, length);
+                const { all, seventh } = generatedBoard.occurrences;
 
                 generatedBoard.twoDigitNumbers.push(formatNumber.tensDigit);
                 generatedBoard.board[name].push(formatNumber.number);
 
-                generatedBoard.occurrences.all[formatNumber.tensDigit] = generatedBoard.occurrences.all[formatNumber.tensDigit]
-                    ? generatedBoard.occurrences.all[formatNumber.tensDigit] + 1
-                    : 1;
+                all[formatNumber.tensDigit] = all[formatNumber.tensDigit] ? all[formatNumber.tensDigit] + 1 : 1;
 
                 if (name === "seventh") {
-                    generatedBoard.occurrences.seventh[formatNumber.tensDigit] = generatedBoard.occurrences.seventh[formatNumber.tensDigit]
-                        ? generatedBoard.occurrences.seventh[formatNumber.tensDigit] + 1
-                        : 1;
+                    seventh[formatNumber.tensDigit] = seventh[formatNumber.tensDigit] ? seventh[formatNumber.tensDigit] + 1 : 1;
                 }
             }
         });
