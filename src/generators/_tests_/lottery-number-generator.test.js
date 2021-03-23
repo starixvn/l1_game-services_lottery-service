@@ -39,7 +39,7 @@ describe("lottery number generate test", () => {
         const generatedBoard = generator.generate();
 
         // assert
-        expect(generatedBoard.lastTwoDigits.every((number) => number.length === 2)).toBeTrue();
-        expect(generatedBoard.lastTwoDigits.length).toEqual(27);
+        expect(generatedBoard.twoDigitNumbers.every((number) => number.length === 2)).toBeTrue();
+        expect(generatedBoard.twoDigitNumbers.length).toEqual(27);
     });
 });

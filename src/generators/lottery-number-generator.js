@@ -22,11 +22,18 @@ export default class LotteryNumberGenerator {
                 const number = this.randomHelper.randomNumber(max);
                 const formatNumber = this.formatNumber(number, length);
 
-                generatedBoard.lastTwoDigits.push(formatNumber.tensDigit);
+                generatedBoard.twoDigitNumbers.push(formatNumber.tensDigit);
                 generatedBoard.board[name].push(formatNumber.number);
-                generatedBoard.occurrences[formatNumber.tensDigit] = generatedBoard.occurrences[formatNumber.tensDigit]
-                    ? generatedBoard.occurrences[formatNumber.tensDigit] + 1
+
+                generatedBoard.occurrences.all[formatNumber.tensDigit] = generatedBoard.occurrences.all[formatNumber.tensDigit]
+                    ? generatedBoard.occurrences.all[formatNumber.tensDigit] + 1
                     : 1;
+
+                if (name === "seventh") {
+                    generatedBoard.occurrences.seventh[formatNumber.tensDigit] = generatedBoard.occurrences.seventh[formatNumber.tensDigit]
+                        ? generatedBoard.occurrences.seventh[formatNumber.tensDigit] + 1
+                        : 1;
+                }
             }
         });
 
@@ -45,8 +52,11 @@ export default class LotteryNumberGenerator {
                 sixth: [],
                 seventh: [],
             },
-            lastTwoDigits: [],
-            occurrences: {},
+            twoDigitNumbers: [],
+            occurrences: {
+                all: {},
+                seventh: {},
+            },
         };
     }
 
@@ -63,7 +73,7 @@ export default class LotteryNumberGenerator {
 
         return {
             number: formatNumber,
-            tensDigit: currentLength === 2 ? formatNumber : formatNumber.substring(requiredLength - 2),
+            tensDigit: requiredLength === 2 ? formatNumber : formatNumber.substring(requiredLength - 2),
         };
     }
 }
