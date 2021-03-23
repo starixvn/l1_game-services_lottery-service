@@ -22,7 +22,7 @@ export default class LotteryNumberGenerator {
                 const number = this.randomHelper.randomNumber(max);
                 const formatNumber = this.formatNumber(number, length);
 
-                generatedBoard.tensDigits.push(formatNumber.tensDigit);
+                generatedBoard.lastTwoDigits.push(formatNumber.tensDigit);
                 generatedBoard.board[name].push(formatNumber.number);
                 generatedBoard.occurrences[formatNumber.tensDigit] = generatedBoard.occurrences[formatNumber.tensDigit]
                     ? generatedBoard.occurrences[formatNumber.tensDigit] + 1
@@ -45,7 +45,7 @@ export default class LotteryNumberGenerator {
                 sixth: [],
                 seventh: [],
             },
-            tensDigits: [],
+            lastTwoDigits: [],
             occurrences: {},
         };
     }
