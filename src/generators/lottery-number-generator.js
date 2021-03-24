@@ -1,6 +1,5 @@
 import { RandomHelper } from "./../helpers/";
 import generatorDefinition from "./generator-definition";
-
 export default class LotteryNumberGenerator {
     /**
      * @param {generatorDefinition} boardDefinition

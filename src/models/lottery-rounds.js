@@ -2,14 +2,14 @@ import mongoose from "mongoose";
 
 const resultSchema = new mongoose.Schema(
   {
-    specialPrize: { type: Array, required: true },
-    firstPrize: { type: Array, required: true },
-    secondPrize: { type: Array, required: true },
-    thirdPrize: { type: Array, required: true },
-    fourthPrize: { type: Array, required: true },
-    fifthPrize: { type: Array, required: true },
-    sixthPrize: { type: Array, required: true },
-    seventhPrize: { type: Array, required: true },
+    special: { type: Array, required: true },
+    first: { type: Array, required: true },
+    second: { type: Array, required: true },
+    third: { type: Array, required: true },
+    fourth: { type: Array, required: true },
+    fifth: { type: Array, required: true },
+    sixth: { type: Array, required: true },
+    seventh: { type: Array, required: true },
   },
   { _id: false }
 );

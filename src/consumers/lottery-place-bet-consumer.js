@@ -123,19 +123,16 @@ export default class LotteryPlaceBetConsumer extends Core.BaseEventConsumers
 
   adjustBetTracks(playerName, bet) {
     const { betChoice } = bet;
-    const betType = Object.keys(bet)[0];
+    const betType = Object.keys(betChoice)[0];
 
     if (this.gameData.ingame?.[playerName]) {
       const { betTracks } = this.gameData.ingame[playerName];
 
-      betTracks[betChoice] = (betTracks[betChoice] ?? 0) + amount;
       if (!betTracks[betType]) {
         betTracks[betType] = {};
       }
 
-      for (const [choice, amountOnChoice] of Object.entries(
-        betChoice[betType]
-      )) {
+      for (const [choice, amountOnChoice] of Object.entries(betChoice[betType])) {
         betTracks[betType][choice] =
           (betTracks[betType][choice] || 0) + amountOnChoice;
 
