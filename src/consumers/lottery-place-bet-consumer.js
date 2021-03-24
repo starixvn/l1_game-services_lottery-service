@@ -2,176 +2,160 @@ import noticeHelper from "sc-common/helpers/notice-helper";
 import { Core } from "sc-game-base";
 import constants from "../constants";
 
-export default class LotteryPlaceBetConsumer extends Core.BaseEventConsumers
-  .PlaceBetConsumer {
-  hasNegativeAmount(betChoices) {
-    return Object.values(betChoices).some((amount) => amount < 0);
-  }
-
-  composeBetAmountValidationCriteria(player, bet) {
-    const configs = this.gameData.gameConfigs;
-    const betType = Object.keys(bet)[0];
-    const betTypeObj = bet[betType];
-
-    const { betTracks } = this.gameData.ingame[player.profile.name] || {
-      betTracks: {},
-    };
-
-    const currentTotalAmount = betTracks.totalAmount || 0;
-    const currentBetTypeTotalAmount = betTracks[betType]
-      ? Object.values(betTracks[betType]).reduce(
-          (total, amountOnChoice) => total + amountOnChoice,
-          0
-        )
-      : 0;
-
-    const betTypeTotalAmount = Object.values(betTypeObj).reduce(
-      (total, amountOnChoice) => total + amountOnChoice,
-      0
-    );
-
-    const minBet = Math.max(player.profile.minBet, configs.minbet);
-    const maxBet = Math.min(player.profile.maxBet, configs.maxbet);
-    const maxBetPerType = Math.min(
-      player.profile.maxBet,
-      configs.choices_maxbet[betType]
-    );
-
-    return [
-      {
-        failure: this.hasNegativeAmount(betTypeObj),
-        notice: noticeHelper.invalidBet,
-      },
-      {
-        failure: currentBetTypeTotalAmount + betTypeTotalAmount > maxBetPerType,
-        notice: noticeHelper.maxBetForChoice(maxBetPerType),
-      },
-      {
-        failure: betTypeTotalAmount < minBet,
-        notice: noticeHelper.minBet(minBet),
-      },
-      {
-        failure: currentTotalAmount + betTypeTotalAmount > maxBet,
-        notice: noticeHelper.maxBet(maxBet),
-      },
-    ];
-  }
-
-  composeBetChoiceValidationCriteria(bet) {
-    const criterons = [];
-    const betType = Object.keys(bet)[0];
-
-    if (this.definition.betTypes.includes(betType)) {
-      const choices = Object.keys(bet[betType]);
-
-      criterons.push({
-        failure:
-          choices.length < 1 || choices.length > constants.maxChoices[betType],
-        notice: noticeHelper.invalidBet,
-      });
-    } else {
-      criterons.push({
-        failure: true,
-        notice: noticeHelper.invalidBet,
-      });
+export default class LotteryPlaceBetConsumer extends Core.BaseEventConsumers.PlaceBetConsumer {
+    hasNegativeAmount(betChoices) {
+        return Object.values(betChoices).some((amount) => amount < 0);
     }
 
-    return criterons;
-  }
+    composeBetAmountValidationCriteria(player, bet) {
+        const configs = this.gameData.gameConfigs;
+        const betType = Object.keys(bet)[0];
+        const betTypeObj = bet[betType];
 
-  composeValidationCriteria(player, betChoice) {
-    const bettingTimeValidationCriteria = this.composeBettingTimeValidationCriteria();
+        const { betTracks } = this.gameData.ingame[player.profile.name] || {
+            betTracks: {},
+        };
 
-    const betChoiceValidationCriteria = this.composeBetChoiceValidationCriteria(
-      betChoice
-    );
+        const currentTotalAmount = betTracks.totalAmount || 0;
+        const currentBetTypeTotalAmount = betTracks[betType]
+            ? Object.values(betTracks[betType]).reduce((total, amountOnChoice) => total + amountOnChoice, 0)
+            : 0;
 
-    if (betChoiceValidationCriteria.some((x) => x.failure)) {
-      return bettingTimeValidationCriteria.concat(betChoiceValidationCriteria);
+        const betTypeTotalAmount = Object.values(betTypeObj).reduce((total, amountOnChoice) => total + amountOnChoice, 0);
+
+        const minBet = Math.max(player.profile.minBet, configs.minbet);
+        const maxBet = Math.min(player.profile.maxBet, configs.maxbet);
+        const maxBetPerType = Math.min(player.profile.maxBet, configs.choices_maxbet[betType]);
+
+        return [
+            {
+                failure: this.hasNegativeAmount(betTypeObj),
+                notice: noticeHelper.invalidBet,
+            },
+            {
+                failure: currentBetTypeTotalAmount + betTypeTotalAmount > maxBetPerType,
+                notice: noticeHelper.maxBetForChoice(maxBetPerType),
+            },
+            {
+                failure: betTypeTotalAmount < minBet,
+                notice: noticeHelper.minBet(minBet),
+            },
+            {
+                failure: currentTotalAmount + betTypeTotalAmount > maxBet,
+                notice: noticeHelper.maxBet(maxBet),
+            },
+        ];
     }
 
-    const betAmountValidationCriteria = this.composeBetAmountValidationCriteria(
-      player,
-      betChoice
-    );
+    composeBetChoiceValidationCriteria(bet) {
+        const criterons = [];
+        const betType = Object.keys(bet)[0];
 
-    return bettingTimeValidationCriteria.concat(
-      betAmountValidationCriteria,
-      betChoiceValidationCriteria
-    );
-  }
+        if (this.definition.betTypes.includes(betType) && Object.keys(bet).length === 1) {
+            const choices = Object.keys(bet[betType]);
 
-  validateBetRequest(player, betChoice) {
-    if (!betChoice) {
-      return false;
+            criterons.push({
+                failure: choices.length < 1 || choices.length > constants.maxChoices[betType],
+                notice: noticeHelper.invalidBet,
+            });
+        } else {
+            criterons.push({
+                failure: true,
+                notice: noticeHelper.invalidBet,
+            });
+        }
+
+        return criterons;
     }
 
-    const criteria = this.composeValidationCriteria(player, betChoice);
-    const failedCriterion = criteria.find((criterion) => criterion.failure);
+    composeValidationCriteria(player, betChoice) {
+        const bettingTimeValidationCriteria = this.composeBettingTimeValidationCriteria();
 
-    if (failedCriterion) {
-      this.publisher.publishToUser(player.UID, {
-        endBet: -1,
-        notice: failedCriterion.notice,
-      });
+        const betChoiceValidationCriteria = this.composeBetChoiceValidationCriteria(betChoice);
 
-      return false;
+        if (betChoiceValidationCriteria.some((x) => x.failure)) {
+            return bettingTimeValidationCriteria.concat(betChoiceValidationCriteria);
+        }
+
+        const betAmountValidationCriteria = this.composeBetAmountValidationCriteria(player, betChoice);
+
+        return bettingTimeValidationCriteria.concat(betAmountValidationCriteria, betChoiceValidationCriteria);
     }
 
-    return true;
-  }
+    validateBetRequest(player, betChoice) {
+        if (!betChoice) {
+            return false;
+        }
 
-  adjustBetTracks(playerName, bet) {
-    const { betChoice } = bet;
-    const betType = Object.keys(betChoice)[0];
+        const criteria = this.composeValidationCriteria(player, betChoice);
+        const failedCriterion = criteria.find((criterion) => criterion.failure);
 
-    if (this.gameData.ingame?.[playerName]) {
-      const { betTracks } = this.gameData.ingame[playerName];
+        if (failedCriterion) {
+            this.publisher.publishToUser(player.UID, {
+                endBet: -1,
+                notice: failedCriterion.notice,
+            });
 
-      if (!betTracks[betType]) {
-        betTracks[betType] = {};
-      }
+            return false;
+        }
 
-      for (const [choice, amountOnChoice] of Object.entries(betChoice[betType])) {
-        betTracks[betType][choice] =
-          (betTracks[betType][choice] || 0) + amountOnChoice;
-
-        betTracks.totalAmount = (betTracks.totalAmount || 0) + amountOnChoice;
-      }
-    }
-  }
-
-  adjustPayload(payload) {
-    const { betChoice } = payload;
-    for (const betTypeObj of Object.values(betChoice)) {
-      for (const choice of Object.keys(betTypeObj)) {
-        betTypeObj[choice] = betTypeObj[choice] >> 0;
-      }
-    }
-  }
-
-  consume(player, payload) {
-    this.adjustPayload(payload);
-
-    const { betChoice } = payload;
-    const name = player.profile.name;
-
-    if (!this.validateBetRequest(player, betChoice)) {
-      return;
+        return true;
     }
 
-    if (!this.gameData.ingame[name]) {
-      const newPlayer = {
-        name: player.profile.name,
-        currency: player.session.currency,
-        betTracks: {},
-        betQueue: [],
-      };
+    adjustBetTracks(playerName, bet) {
+        const { betChoice } = bet;
+        const betType = Object.keys(betChoice)[0];
 
-      this.gameData.ingame[name] = newPlayer;
+        if (this.gameData.ingame?.[playerName]) {
+            const { betTracks } = this.gameData.ingame[playerName];
+
+            if (!betTracks[betType]) {
+                betTracks[betType] = {};
+            }
+
+            for (const [choice, amountOnChoice] of Object.entries(betChoice[betType])) {
+                betTracks[betType][choice] = (betTracks[betType][choice] || 0) + amountOnChoice;
+
+                betTracks.totalAmount = (betTracks.totalAmount || 0) + amountOnChoice;
+            }
+        }
     }
 
-    this.adjustBetTracks(player.profile.name, payload);
-    this.gameData.ingame[name].betQueue.push({ player, payload });
-  }
+    adjustPayload(payload) {
+        const { betChoice } = payload;
+        payload.amount = 0;
+        payload.freeBet = payload.freeBet ?? false;
+
+        for (const betTypeObj of Object.values(betChoice)) {
+            for (const choice of Object.keys(betTypeObj)) {
+                betTypeObj[choice] = betTypeObj[choice] >> 0;
+                payload.amount += betTypeObj[choice];
+            }
+        }
+    }
+
+    consume(player, payload) {
+        this.adjustPayload(payload);
+
+        const { betChoice } = payload;
+        const name = player.profile.name;
+
+        if (!this.validateBetRequest(player, betChoice)) {
+            return;
+        }
+
+        if (!this.gameData.ingame[name]) {
+            const newPlayer = {
+                name: player.profile.name,
+                currency: player.session.currency,
+                betTracks: {},
+                betQueue: [],
+            };
+
+            this.gameData.ingame[name] = newPlayer;
+        }
+
+        this.adjustBetTracks(player.profile.name, payload);
+        this.gameData.ingame[name].betQueue.push({ player, payload });
+    }
 }

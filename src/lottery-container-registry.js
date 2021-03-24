@@ -2,6 +2,7 @@ import awilix from "awilix";
 import { Core } from "sc-game-base";
 
 import LotteryPlaceBetConsumer from "./consumers/lottery-place-bet-consumer";
+import LotteryProcessBetQueue from "./crons/lottery-process-bet-queue";
 import { LotteryNumberGenerator } from "./generators";
 import { LotteryBetLogs, LotteryBets, LotteryRounds } from "./models";
 
@@ -36,6 +37,14 @@ export default class LotteryContainerRegistry extends Core.ContainerRegistry {
     registerGenerators() {
         this.container.register({
             lotteryNumberGenerator: asClass(LotteryNumberGenerator).singleton(),
+        });
+    }
+
+    registerCrons() {
+        super.registerCrons();
+
+        this.container.register({
+            processBetQueue: asClass(LotteryProcessBetQueue).singleton().proxy(),
         });
     }
 }

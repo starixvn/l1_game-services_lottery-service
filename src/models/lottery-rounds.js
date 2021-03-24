@@ -25,6 +25,7 @@ const settlementResultSchema = new mongoose.Schema(
     parlay3: { type: Array, required: true },
     parlay4: { type: Array, required: true },
     others: { type: Object, required: true },
+    occurrences: { type: Object, required: true },
   },
   { _id: false }
 );
