@@ -1,5 +1,6 @@
 import { RandomHelper } from "./../helpers/";
 import generatorDefinition from "./generator-definition";
+
 export default class LotteryNumberGenerator {
     /**
      * @param {generatorDefinition} boardDefinition
@@ -15,25 +16,44 @@ export default class LotteryNumberGenerator {
         let generatedBoard = this.initEmptyBoard();
 
         Object.keys(prizes).forEach((name) => {
-            const { max, total, length } = prizes[name];
+            const { max, total } = prizes[name];
 
             for (let index = 0; index < total; index++) {
                 const number = this.randomHelper.randomNumber(max);
-                const formatNumber = this.formatNumber(number, length);
-                const { all, seventh } = generatedBoard.occurrences;
 
-                generatedBoard.twoDigitNumbers.push(formatNumber.tensDigit);
-                generatedBoard.board[name].push(formatNumber.number);
-
-                all[formatNumber.tensDigit] = all[formatNumber.tensDigit] ? all[formatNumber.tensDigit] + 1 : 1;
-
-                if (name === "seventh") {
-                    seventh[formatNumber.tensDigit] = seventh[formatNumber.tensDigit] ? seventh[formatNumber.tensDigit] + 1 : 1;
-                }
+                this.updateStatistics(generatedBoard, name, number);
             }
         });
 
         return generatedBoard;
+    }
+
+    reload(board) {
+        let generatedBoard = this.initEmptyBoard();
+        generatedBoard.board = board;
+
+        Object.keys(board).forEach((name) => {
+            board[name].forEach((number) => {
+                this.updateStatistics(generatedBoard, name, number);
+            });
+        });
+
+        return generatedBoard;
+    }
+
+    updateStatistics(generatedBoard, name, number) {
+        const { all, seventh } = generatedBoard.occurrences;
+        const { length } = this.definition.prizes[name];
+        const formatNumber = this.formatNumber(number, length);
+
+        generatedBoard.board[name].push(formatNumber.number);
+        generatedBoard.twoDigitNumbers.push(formatNumber.twoDigitNumber);
+
+        all[formatNumber.twoDigitNumber] = all[formatNumber.tensDigit] ? all[formatNumber.twoDigitNumber] + 1 : 1;
+
+        if (name === "seventh") {
+            seventh[formatNumber.twoDigitNumber] = seventh[formatNumber.twoDigitNumber] ? seventh[formatNumber.twoDigitNumber] + 1 : 1;
+        }
     }
 
     initEmptyBoard() {
@@ -69,7 +89,7 @@ export default class LotteryNumberGenerator {
 
         return {
             number: formatNumber,
-            tensDigit: requiredLength === 2 ? formatNumber : formatNumber.substring(requiredLength - 2),
+            twoDigitNumber: requiredLength === 2 ? formatNumber : formatNumber.substring(requiredLength - 2),
         };
     }
 }
