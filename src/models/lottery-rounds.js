@@ -2,8 +2,8 @@ import mongoose from "mongoose";
 
 const resultSchema = new mongoose.Schema(
   {
-    specialPrize: { type: String, required: true },
-    firstPrize: { type: String, required: true },
+    specialPrize: { type: Array, required: true },
+    firstPrize: { type: Array, required: true },
     secondPrize: { type: Array, required: true },
     thirdPrize: { type: Array, required: true },
     fourthPrize: { type: Array, required: true },
