@@ -1,11 +1,5 @@
-import { RandomHelper } from ".";
-import { LotteryNumberGenerator } from "../generators";
-import generatorDefinition from "../generators/generator-definition";
-
 export const generateResult = () => {
-    var generator = new LotteryNumberGenerator(generatorDefinition, RandomHelper);
 
-    return generator.generate();
 };
 
 export const getSettlementResult = (generatedResult) => {

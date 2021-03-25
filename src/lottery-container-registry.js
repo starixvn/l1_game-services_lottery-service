@@ -2,8 +2,11 @@ import awilix from "awilix";
 import { Core } from "sc-game-base";
 
 import LotteryPlaceBetConsumer from "./consumers/lottery-place-bet-consumer";
+import LotterySettleRoundConsumer from "./consumers/lottery-settle-round-consumer";
 import LotteryProcessBetQueue from "./crons/lottery-process-bet-queue";
 import { LotteryNumberGenerator } from "./generators";
+import generatorDefinition from "./generators/generator-definition";
+import { RandomHelper } from "./helpers";
 import { LotteryBetLogs, LotteryBets, LotteryRounds } from "./models";
 
 const { asClass, asValue } = awilix;
@@ -30,6 +33,7 @@ export default class LotteryContainerRegistry extends Core.ContainerRegistry {
         super.registerConsumers();
 
         this.container.register({
+            settleGameRoundConsumer: asClass(LotterySettleRoundConsumer).singleton().proxy(),
             placeBetConsumer: asClass(LotteryPlaceBetConsumer).singleton(),
         });
     }
@@ -37,6 +41,8 @@ export default class LotteryContainerRegistry extends Core.ContainerRegistry {
     registerGenerators() {
         this.container.register({
             lotteryNumberGenerator: asClass(LotteryNumberGenerator).singleton(),
+            boardDefinition: asValue(generatorDefinition),
+            randomHelper: asValue(RandomHelper),
         });
     }
 
