@@ -18,6 +18,6 @@ export const getSettlementResult = (generatedResult) => {
             big: specialTwoDigitNumber >= 50,
             small: specialTwoDigitNumber <= 49,
         },
-        occurrences: generateResult.occurrences
+        occurrences: generatedResult.occurrences
     };
 };

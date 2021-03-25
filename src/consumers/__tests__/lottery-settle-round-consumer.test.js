@@ -1,0 +1,86 @@
+import { GameData } from "sc-game-base/src/core";
+import gameSettings from "../../game-settings";
+import { LotteryNumberGenerator } from "../../generators";
+import generatorDefinition from "../../generators/generator-definition";
+import { RandomHelper } from "../../helpers";
+import { getSettlementResult } from "../../helpers/result-helper";
+import LotteryGameDefinition from "../../lottery-game-definition";
+import LotterySettleRoundConsumer from "../lottery-settle-round-consumer";
+
+const gameData = new GameData(10);
+gameData.gameConfigs = {
+    minbet: 1,
+    maxbet: 2000,
+    choices_maxbet: {
+        "4Sets": 200,
+        special: 100,
+        head: 500,
+        tail: 500,
+        "27Sets": 2000,
+        parlay2: 200,
+        parlay3: 100,
+        parlay4: 100,
+        others: 2000,
+    },
+    odds: {
+        "4Sets": 24,
+        special: 90,
+        head: 9,
+        tail: 9,
+        "27Sets": 3.6,
+        parlay2: 13,
+        parlay3: 50,
+        parlay4: 120,
+        others: 1.98,
+    },
+};
+const definition = new LotteryGameDefinition(gameSettings);
+const settleRoundConsumer = new LotterySettleRoundConsumer({ definition, gameData });
+const lotteryNumberGenerator = new LotteryNumberGenerator(generatorDefinition, RandomHelper);
+
+describe("calculateBetResult test", () => {
+    it("4Sets test - should calculate win amount and total lost correctly", () => {
+        const generatedResult = lotteryNumberGenerator.generate();
+        const settlementResult = getSettlementResult(generatedResult);
+        const bet = {
+            choices: {
+                "4Sets": {
+                    [settlementResult["4Sets"][0]]: 100,
+                    [settlementResult["4Sets"][1]]: 50,
+                    100: 10,
+                },
+            },
+            totalAmount: 160,
+        };
+        const expectedTotalWin = 150 * gameData.gameConfigs.odds["4Sets"];
+
+        var actualResult = settleRoundConsumer.calculateBetResult(settlementResult, bet, gameData.gameConfigs.odds);
+
+        expect(actualResult.totalWin).toEqual(expectedTotalWin);
+        expect(actualResult.winningByChoices["4Sets"]).toEqual(expectedTotalWin);
+        expect(actualResult.netWin).toEqual(expectedTotalWin - 150);
+        expect(actualResult.totalLost).toEqual(10);
+    });
+
+    it("special test - should calculate win amount and total lost correctly", () => {
+        const generatedResult = lotteryNumberGenerator.generate();
+        const settlementResult = getSettlementResult(generatedResult);
+        const bet = {
+            choices: {
+                special: {
+                    [settlementResult.special]: 50,
+                    100: 10,
+                },
+            },
+            totalAmount: 60,
+        };
+        const expectedTotalWin = 50 * gameData.gameConfigs.odds["special"];
+
+        var actualResult = settleRoundConsumer.calculateBetResult(settlementResult, bet, gameData.gameConfigs.odds);
+
+        expect(actualResult.totalWin).toEqual(expectedTotalWin);
+        expect(actualResult.winningByChoices["special"]).toEqual(expectedTotalWin);
+        expect(actualResult.netWin).toEqual(expectedTotalWin - 50);
+        expect(actualResult.totalLost).toEqual(10);
+    });
+});

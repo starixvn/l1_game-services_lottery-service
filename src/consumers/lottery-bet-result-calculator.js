@@ -61,11 +61,12 @@ export default {
         }
     },
     "27Sets": function (result, betChoices, settlementResult, odds) {
+        const { occurrences } = settlementResult;
         result.winningByChoices["27Sets"] = 0;
 
         for (const [choice, amount] of Object.entries(betChoices)) {
             if (settlementResult["27Sets"].some((x) => x === choice)) {
-                const winAmount = amount * odds;
+                const winAmount = amount * odds * occurrences.all[choice];
 
                 result.totalWin += winAmount;
                 result.winningByChoices["27Sets"] += winAmount;
@@ -96,7 +97,7 @@ export default {
 
         for (const [choice, amount] of Object.entries(betChoices)) {
             const numbers = choice.split("-");
-            if (numbers.every(x => settlementResult["27Sets"].includes(x)) {
+            if (numbers.every(x => settlementResult["27Sets"].includes(x))) {
                 const winAmount = amount * odds;
 
                 result.totalWin += winAmount;
@@ -112,7 +113,7 @@ export default {
 
         for (const [choice, amount] of Object.entries(betChoices)) {
             const numbers = choice.split("-");
-            if (numbers.every(x => settlementResult["27Sets"].includes(x)) {
+            if (numbers.every(x => settlementResult["27Sets"].includes(x))) {
                 const winAmount = amount * odds;
 
                 result.totalWin += winAmount;

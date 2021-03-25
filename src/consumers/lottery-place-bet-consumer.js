@@ -3,33 +3,76 @@ import { Core } from "sc-game-base";
 import constants from "../constants";
 
 export default class LotteryPlaceBetConsumer extends Core.BaseEventConsumers.PlaceBetConsumer {
-    hasNegativeAmount(betChoices) {
-        return Object.values(betChoices).some((amount) => amount < 0);
+    betChoiceValidateor = {
+        "4Sets": function (betChoiceKeys) {
+            return betChoiceKeys.every((choice) => !isNaN(choice) && choice.length === 2);
+        },
+        special: function (betChoiceKeys) {
+            return betChoiceKeys.every((choice) => !isNaN(choice) && choice.length === 2);
+        },
+        head: function (betChoiceKeys) {
+            return betChoiceKeys.every((choice) => !isNaN(choice) && choice.length === 1);
+        },
+        tail: function (betChoiceKeys) {
+            return betChoiceKeys.every((choice) => !isNaN(choice) && choice.length === 2);
+        },
+        "27Sets": function (betChoiceKeys) {
+            return betChoiceKeys.every((choice) => !isNaN(choice) && choice.length === 2);
+        },
+        parlay2: function (betChoiceKeys) {
+            return betChoiceKeys.every((choice) => {
+                const numbers = choice.split("-");
+
+                return numbers.length === 2 && numbers.every((x) => !isNaN(x));
+            });
+        },
+        parlay3: function (betChoiceKeys) {
+            return betChoiceKeys.every((choice) => {
+                const numbers = choice.split("-");
+
+                return numbers.length === 3 && numbers.every((x) => !isNaN(x));
+            });
+        },
+        parlay4: function (betChoiceKeys) {
+            return betChoiceKeys.every((choice) => {
+                const numbers = choice.split("-");
+
+                return numbers.length === 4 && numbers.every((x) => !isNaN(x));
+            });
+        },
+        others: function (betChoiceKeys) {
+            const availableChoices = ["odd", "even", "big", "small"];
+            return betChoiceKeys.every((choice) => availableChoices.includes(choice));
+        },
+    };
+
+    hasNegativeAmount(betType) {
+        return Object.values(betType).some((amount) => amount < 0);
     }
 
     composeBetAmountValidationCriteria(player, bet) {
         const configs = this.gameData.gameConfigs;
-        const betType = Object.keys(bet)[0];
-        const betTypeObj = bet[betType];
+        const betTypeKey = Object.keys(bet)[0];
+        const betType = bet[betTypeKey];
 
         const { betTracks } = this.gameData.ingame[player.profile.name] || {
             betTracks: {},
         };
 
         const currentTotalAmount = betTracks.totalAmount || 0;
-        const currentBetTypeTotalAmount = betTracks[betType]
-            ? Object.values(betTracks[betType]).reduce((total, amountOnChoice) => total + amountOnChoice, 0)
+        const currentBetTypeTotalAmount = betTracks[betTypeKey]
+            ? Object.values(betTracks[betTypeKey]).reduce((total, amountOnChoice) => total + amountOnChoice, 0)
             : 0;
 
-        const betTypeTotalAmount = Object.values(betTypeObj).reduce((total, amountOnChoice) => total + amountOnChoice, 0);
+        const betTypeTotalAmount = Object.values(betType).reduce((total, amountOnChoice) => total + amountOnChoice, 0);
 
         const minBet = Math.max(player.profile.minBet, configs.minbet);
         const maxBet = Math.min(player.profile.maxBet, configs.maxbet);
-        const maxBetPerType = Math.min(player.profile.maxBet, configs.choices_maxbet[betType]);
+        const maxBetPerType = Math.min(player.profile.maxBet, configs.choices_maxbet[betTypeKey]);
 
         return [
             {
-                failure: this.hasNegativeAmount(betTypeObj),
+                failure: this.hasNegativeAmount(betType),
                 notice: noticeHelper.invalidBet,
             },
             {
@@ -49,15 +92,26 @@ export default class LotteryPlaceBetConsumer extends Core.BaseEventConsumers.Pla
 
     composeBetChoiceValidationCriteria(bet) {
         const criterons = [];
-        const betType = Object.keys(bet)[0];
 
-        if (this.definition.betTypes.includes(betType) && Object.keys(bet).length === 1) {
-            const choices = Object.keys(bet[betType]);
+        if (Object.keys(bet).length === 1) {
+            const betType = Object.keys(bet)[0];
 
-            criterons.push({
-                failure: choices.length < 1 || choices.length > constants.maxChoices[betType],
-                notice: noticeHelper.invalidBet,
-            });
+            if (this.definition.betTypes.includes(betType)) {
+                const betChoiceKeys = Object.keys(bet[betType]);
+
+                criterons.push({
+                    failure:
+                        betChoiceKeys.length < 1 ||
+                        betChoiceKeys.length > constants.maxChoices[betType] ||
+                        this.betChoiceValidateor[betType](betChoiceKeys),
+                    notice: noticeHelper.invalidBet,
+                });
+            } else {
+                criterons.push({
+                    failure: true,
+                    notice: noticeHelper.invalidBet,
+                });
+            }
         } else {
             criterons.push({
                 failure: true,
@@ -104,17 +158,17 @@ export default class LotteryPlaceBetConsumer extends Core.BaseEventConsumers.Pla
 
     adjustBetTracks(playerName, bet) {
         const { betChoice } = bet;
-        const betType = Object.keys(betChoice)[0];
+        const betTypeKey = Object.keys(betChoice)[0];
 
         if (this.gameData.ingame?.[playerName]) {
             const { betTracks } = this.gameData.ingame[playerName];
 
-            if (!betTracks[betType]) {
-                betTracks[betType] = {};
+            if (!betTracks[betTypeKey]) {
+                betTracks[betTypeKey] = {};
             }
 
-            for (const [choice, amountOnChoice] of Object.entries(betChoice[betType])) {
-                betTracks[betType][choice] = (betTracks[betType][choice] || 0) + amountOnChoice;
+            for (const [choice, amountOnChoice] of Object.entries(betChoice[betTypeKey])) {
+                betTracks[betTypeKey][choice] = (betTracks[betTypeKey][choice] || 0) + amountOnChoice;
 
                 betTracks.totalAmount = (betTracks.totalAmount || 0) + amountOnChoice;
             }
@@ -126,10 +180,10 @@ export default class LotteryPlaceBetConsumer extends Core.BaseEventConsumers.Pla
         payload.amount = 0;
         payload.freeBet = payload.freeBet ?? false;
 
-        for (const betTypeObj of Object.values(betChoice)) {
-            for (const choice of Object.keys(betTypeObj)) {
-                betTypeObj[choice] = betTypeObj[choice] >> 0;
-                payload.amount += betTypeObj[choice];
+        for (const betType of Object.values(betChoice)) {
+            for (const choice of Object.keys(betType)) {
+                betType[choice] = betType[choice] >> 0;
+                payload.amount += betType[choice];
             }
         }
     }
