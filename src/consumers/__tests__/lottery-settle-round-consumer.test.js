@@ -39,7 +39,7 @@ const settleRoundConsumer = new LotterySettleRoundConsumer({ definition, gameDat
 const lotteryNumberGenerator = new LotteryNumberGenerator(generatorDefinition, RandomHelper);
 
 describe("calculateBetResult test", () => {
-    it("4Sets test - should calculate win amount and total lost correctly", () => {
+    it("4Setsbet test - should calculate win amount and total lost correctly", () => {
         const generatedResult = lotteryNumberGenerator.generate();
         const settlementResult = getSettlementResult(generatedResult);
         const bet = {
@@ -62,7 +62,7 @@ describe("calculateBetResult test", () => {
         expect(actualResult.totalLost).toEqual(10);
     });
 
-    it("special test - should calculate win amount and total lost correctly", () => {
+    it("special bet test - should calculate win amount and total lost correctly", () => {
         const generatedResult = lotteryNumberGenerator.generate();
         const settlementResult = getSettlementResult(generatedResult);
         const bet = {
@@ -82,5 +82,57 @@ describe("calculateBetResult test", () => {
         expect(actualResult.winningByChoices["special"]).toEqual(expectedTotalWin);
         expect(actualResult.netWin).toEqual(expectedTotalWin - 50);
         expect(actualResult.totalLost).toEqual(10);
+    });
+
+    it("head tail bet test - should calculate win amount and total lost correctly", () => {
+        const generatedResult = lotteryNumberGenerator.generate();
+        const settlementResult = getSettlementResult(generatedResult);
+        const bet = {
+            choices: {
+                head: {
+                    [settlementResult.head]: 10,
+                    100: 10,
+                },
+                tail: {
+                    [settlementResult.tail]: 10,
+                    100: 10,
+                },
+            },
+            totalAmount: 40,
+        };
+        const expectedTotalWin = 10 * gameData.gameConfigs.odds["head"] + 10 * gameData.gameConfigs.odds["tail"];
+
+        var actualResult = settleRoundConsumer.calculateBetResult(settlementResult, bet, gameData.gameConfigs.odds);
+
+        expect(actualResult.totalWin).toEqual(expectedTotalWin);
+        expect(actualResult.netWin).toEqual(expectedTotalWin - 20);
+        expect(actualResult.totalLost).toEqual(20);
+    });
+    it("parlay bet test - should calculate win amount and total lost correctly", () => {
+        const generatedResult = lotteryNumberGenerator.generate();
+        const settlementResult = getSettlementResult(generatedResult);
+        const bet = {
+            choices: {
+                parlay2: {
+                    [`${settlementResult["27Sets"][0]}-${settlementResult["27Sets"][1]}`]: 10,
+                },
+                parlay3: {
+                    [`${settlementResult["27Sets"][0]}-${settlementResult["27Sets"][1]}-${settlementResult["27Sets"][2]}`]: 10,
+                },
+                parlay4: {
+                    [`${settlementResult["27Sets"][0]}-${settlementResult["27Sets"][1]}-${settlementResult["27Sets"][2]}-${settlementResult["27Sets"][3]}`]: 10,
+                },
+            },
+            totalAmount: 30,
+        };
+        const expectedTotalWin =
+            10 * gameData.gameConfigs.odds["parlay2"] + 10 * gameData.gameConfigs.odds["parlay3"] + 10 * gameData.gameConfigs.odds["parlay4"];
+
+        var actualResult = settleRoundConsumer.calculateBetResult(settlementResult, bet, gameData.gameConfigs.odds);
+
+        expect(actualResult.totalWin).toEqual(expectedTotalWin);
+        expect(actualResult.winningByChoices["parlay2"]).toEqual(10 * gameData.gameConfigs.odds["parlay2"]);
+        expect(actualResult.netWin).toEqual(expectedTotalWin - 30);
+        expect(actualResult.totalLost).toEqual(0);
     });
 });

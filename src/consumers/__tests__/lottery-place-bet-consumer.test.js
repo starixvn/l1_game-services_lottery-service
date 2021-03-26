@@ -103,6 +103,19 @@ describe("composeBetChoiceValidationCriteria test", () => {
         var actualResult = placeBetConsumer.composeBetChoiceValidationCriteria(payload.betChoice);
         expect(actualResult.some((x) => x.failure)).toBeTrue();
     });
+
+    it("valid bet - no fail criteron", () => {
+        const payload = {
+            betChoice: {
+                "4Sets": {
+                    10: 1,
+                },
+            },
+        };
+
+        var actualResult = placeBetConsumer.composeBetChoiceValidationCriteria(payload.betChoice);
+        expect(actualResult.every((x) => !x.failure)).toBeTrue();
+    });
 });
 
 describe("composeBetAmountValidationCriteria test", () => {
@@ -123,7 +136,7 @@ describe("composeBetAmountValidationCriteria test", () => {
             },
         };
 
-        var actualResult = placeBetConsumer.composeBetAmountValidationCriteria(realPlayer, payload.betChoice);
+        var actualResult = placeBetConsumer.composeBetAmountValidationCriteria(realPlayer, payload.betChoice, -1, false);
         expect(actualResult.some((x) => x.failure)).toBeTrue();
     });
 
@@ -148,7 +161,7 @@ describe("composeBetAmountValidationCriteria test", () => {
             },
         };
 
-        var actualResult = placeBetConsumer.composeBetAmountValidationCriteria(realPlayer, payload.betChoice);
+        var actualResult = placeBetConsumer.composeBetAmountValidationCriteria(realPlayer, payload.betChoice, 100, false);
         expect(actualResult.some((x) => x.failure)).toBeTrue();
     });
 
@@ -173,7 +186,7 @@ describe("composeBetAmountValidationCriteria test", () => {
             },
         };
 
-        var actualResult = placeBetConsumer.composeBetAmountValidationCriteria(realPlayer, payload.betChoice);
+        var actualResult = placeBetConsumer.composeBetAmountValidationCriteria(realPlayer, payload.betChoice, 2000, false);
         expect(actualResult.some((x) => x.failure)).toBeTrue();
     });
 });

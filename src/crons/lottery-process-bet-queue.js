@@ -59,33 +59,23 @@ export default class LotteryProcessBetQueue extends ProcessBetQueue {
     buildBetAmountIncrement(bet) {
         const increment = {};
 
-        Object.entries(bet).forEach(([betTypes, choicesPerType]) => {
+        Object.entries(bet).forEach(([betType, choicesPerType]) => {
             Object.entries(choicesPerType).forEach(([betChoice, amount]) => {
-                increment[`choices.${betTypes}.${betChoice}`] = amount;
+                increment[`choices.${betType}.${betChoice}`] = amount;
             });
         });
 
         return increment;
     }
 
-    calculateTotalBetAmount(bet) {
-        let total = 0;
-        const betTypeObj = Object.values(bet)[0];
-        for (const amount of Object.values(betTypeObj)) {
-            total += amount;
-        }
-
-        return total;
-    }
-
     decreaseBetTracks(playerName, bet) {
         const { betChoice } = bet;
-        const betType = Object.keys(betChoice)[0];
+        const betTypeKey = Object.keys(betChoice)[0];
 
         if (this.gameData.ingame?.[playerName]) {
             const { betTracks } = this.gameData.ingame[playerName];
-            for (const [choice, amountOnChoice] of Object.entries(betChoice[betType])) {
-                betTracks[betType][choice] -= amountOnChoice;
+            for (const [choice, amountOnChoice] of Object.entries(betChoice[betTypeKey])) {
+                betTracks[betTypeKey][choice] -= amountOnChoice;
                 betTracks.totalAmount -= amountOnChoice;
             }
         }

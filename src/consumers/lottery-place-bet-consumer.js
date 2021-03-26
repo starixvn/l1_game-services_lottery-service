@@ -14,7 +14,7 @@ export default class LotteryPlaceBetConsumer extends Core.BaseEventConsumers.Pla
             return betChoiceKeys.every((choice) => !isNaN(choice) && choice.length === 1);
         },
         tail: function (betChoiceKeys) {
-            return betChoiceKeys.every((choice) => !isNaN(choice) && choice.length === 2);
+            return betChoiceKeys.every((choice) => !isNaN(choice) && choice.length === 1);
         },
         "27Sets": function (betChoiceKeys) {
             return betChoiceKeys.every((choice) => !isNaN(choice) && choice.length === 2);
@@ -23,21 +23,21 @@ export default class LotteryPlaceBetConsumer extends Core.BaseEventConsumers.Pla
             return betChoiceKeys.every((choice) => {
                 const numbers = choice.split("-");
 
-                return numbers.length === 2 && numbers.every((x) => !isNaN(x));
+                return numbers.length === 2 && numbers.every((x) => !isNaN(x) && x.length === 2);
             });
         },
         parlay3: function (betChoiceKeys) {
             return betChoiceKeys.every((choice) => {
                 const numbers = choice.split("-");
 
-                return numbers.length === 3 && numbers.every((x) => !isNaN(x));
+                return numbers.length === 3 && numbers.every((x) => !isNaN(x) && x.length === 2);
             });
         },
         parlay4: function (betChoiceKeys) {
             return betChoiceKeys.every((choice) => {
                 const numbers = choice.split("-");
 
-                return numbers.length === 4 && numbers.every((x) => !isNaN(x));
+                return numbers.length === 4 && numbers.every((x) => !isNaN(x) && x.length === 2);
             });
         },
         others: function (betChoiceKeys) {
@@ -50,7 +50,7 @@ export default class LotteryPlaceBetConsumer extends Core.BaseEventConsumers.Pla
         return Object.values(betType).some((amount) => amount < 0);
     }
 
-    composeBetAmountValidationCriteria(player, bet) {
+    composeBetAmountValidationCriteria(player, bet, amount, freeBet) {
         const configs = this.gameData.gameConfigs;
         const betTypeKey = Object.keys(bet)[0];
         const betType = bet[betTypeKey];
@@ -64,27 +64,29 @@ export default class LotteryPlaceBetConsumer extends Core.BaseEventConsumers.Pla
             ? Object.values(betTracks[betTypeKey]).reduce((total, amountOnChoice) => total + amountOnChoice, 0)
             : 0;
 
-        const betTypeTotalAmount = Object.values(betType).reduce((total, amountOnChoice) => total + amountOnChoice, 0);
-
         const minBet = Math.max(player.profile.minBet, configs.minbet);
         const maxBet = Math.min(player.profile.maxBet, configs.maxbet);
         const maxBetPerType = Math.min(player.profile.maxBet, configs.choices_maxbet[betTypeKey]);
 
         return [
             {
+                failure: freeBet && !configs.enableFreeBet,
+                notice: noticeHelper.invalidBet,
+            },
+            {
                 failure: this.hasNegativeAmount(betType),
                 notice: noticeHelper.invalidBet,
             },
             {
-                failure: currentBetTypeTotalAmount + betTypeTotalAmount > maxBetPerType,
+                failure: currentBetTypeTotalAmount + amount > maxBetPerType,
                 notice: noticeHelper.maxBetForChoice(maxBetPerType),
             },
             {
-                failure: betTypeTotalAmount < minBet,
+                failure: amount < minBet,
                 notice: noticeHelper.minBet(minBet),
             },
             {
-                failure: currentTotalAmount + betTypeTotalAmount > maxBet,
+                failure: currentTotalAmount + amount > maxBet,
                 notice: noticeHelper.maxBet(maxBet),
             },
         ];
@@ -103,7 +105,7 @@ export default class LotteryPlaceBetConsumer extends Core.BaseEventConsumers.Pla
                     failure:
                         betChoiceKeys.length < 1 ||
                         betChoiceKeys.length > constants.maxChoices[betType] ||
-                        this.betChoiceValidateor[betType](betChoiceKeys),
+                        !this.betChoiceValidateor[betType](betChoiceKeys),
                     notice: noticeHelper.invalidBet,
                 });
             } else {
@@ -122,7 +124,7 @@ export default class LotteryPlaceBetConsumer extends Core.BaseEventConsumers.Pla
         return criterons;
     }
 
-    composeValidationCriteria(player, betChoice) {
+    composeValidationCriteria(player, betChoice, amount, freeBet) {
         const bettingTimeValidationCriteria = this.composeBettingTimeValidationCriteria();
 
         const betChoiceValidationCriteria = this.composeBetChoiceValidationCriteria(betChoice);
@@ -131,29 +133,9 @@ export default class LotteryPlaceBetConsumer extends Core.BaseEventConsumers.Pla
             return bettingTimeValidationCriteria.concat(betChoiceValidationCriteria);
         }
 
-        const betAmountValidationCriteria = this.composeBetAmountValidationCriteria(player, betChoice);
+        const betAmountValidationCriteria = this.composeBetAmountValidationCriteria(player, betChoice, amount, freeBet);
 
         return bettingTimeValidationCriteria.concat(betAmountValidationCriteria, betChoiceValidationCriteria);
-    }
-
-    validateBetRequest(player, betChoice) {
-        if (!betChoice) {
-            return false;
-        }
-
-        const criteria = this.composeValidationCriteria(player, betChoice);
-        const failedCriterion = criteria.find((criterion) => criterion.failure);
-
-        if (failedCriterion) {
-            this.publisher.publishToUser(player.UID, {
-                endBet: -1,
-                notice: failedCriterion.notice,
-            });
-
-            return false;
-        }
-
-        return true;
     }
 
     adjustBetTracks(playerName, bet) {
@@ -191,10 +173,10 @@ export default class LotteryPlaceBetConsumer extends Core.BaseEventConsumers.Pla
     consume(player, payload) {
         this.adjustPayload(payload);
 
-        const { betChoice } = payload;
+        const { amount, betChoice, freeBet } = payload;
         const name = player.profile.name;
 
-        if (!this.validateBetRequest(player, betChoice)) {
+        if (!this.validateBetRequest(player, betChoice, amount, freeBet)) {
             return;
         }
 
