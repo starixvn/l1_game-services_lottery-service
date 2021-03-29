@@ -1,11 +1,11 @@
 {
-	"name": "vip-baccarat-service",
+	"name": "lottery-service",
 	"version": "1.0.0",
 	"description": "",
 	"main": "./src/app.js",
 	"repository": {
 		"type": "git",
-		"url": "https://git3.nexdev.net/l1/game-services/vip-baccarat-service.git"
+		"url": "https://git3.nexdev.net/l1/game-services/lottery-service.git"
 	},
 	"author": "pentagon",
 	"license": "ISC",

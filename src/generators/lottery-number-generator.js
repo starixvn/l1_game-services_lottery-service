@@ -30,7 +30,6 @@ export default class LotteryNumberGenerator {
 
     reload(board) {
         let generatedBoard = this.initEmptyBoard();
-        generatedBoard.board = board;
 
         Object.keys(board).forEach((name) => {
             board[name].forEach((number) => {
@@ -49,7 +48,7 @@ export default class LotteryNumberGenerator {
         generatedBoard.board[name].push(formatNumber.number);
         generatedBoard.twoDigitNumbers.push(formatNumber.twoDigitNumber);
 
-        all[formatNumber.twoDigitNumber] = all[formatNumber.tensDigit] ? all[formatNumber.twoDigitNumber] + 1 : 1;
+        all[formatNumber.twoDigitNumber] = all[formatNumber.twoDigitNumber] ? all[formatNumber.twoDigitNumber] + 1 : 1;
 
         if (name === "seventh") {
             seventh[formatNumber.twoDigitNumber] = seventh[formatNumber.twoDigitNumber] ? seventh[formatNumber.twoDigitNumber] + 1 : 1;
