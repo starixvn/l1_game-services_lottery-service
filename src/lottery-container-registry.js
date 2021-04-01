@@ -1,5 +1,5 @@
 import awilix from "awilix";
-import { Core } from "sc-game-base";
+import { Table } from "sc-game-base";
 
 import LotteryPlaceBetConsumer from "./consumers/lottery-place-bet-consumer";
 import LotterySettleRoundConsumer from "./consumers/lottery-settle-round-consumer";
@@ -11,7 +11,7 @@ import { LotteryBetLogs, LotteryBets, LotteryRounds } from "./models";
 
 const { asClass, asValue } = awilix;
 
-export default class LotteryContainerRegistry extends Core.ContainerRegistry {
+export default class LotteryContainerRegistry extends Table.TableContainerRegistry {
     register(appConfigs, definition, gameData) {
         this.registerGenerators();
         super.register(appConfigs, definition, gameData);

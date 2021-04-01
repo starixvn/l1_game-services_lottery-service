@@ -1,4 +1,4 @@
-import { Core } from "sc-game-base";
+import { Core, Table } from "sc-game-base";
 
 import appConfigs from "./app-configs";
 import constants from "./constants";
@@ -9,7 +9,7 @@ import LotteryGameDefinition from "./lottery-game-definition";
 
 const run = async () => {
     const definition = new LotteryGameDefinition(gameSettings, generateResult, getSettlementResult);
-    const gameData = new Core.GameData(gameSettings.durations.wholeRound, constants.resetTotalBets);
+    const gameData = new Table.TableGameData(gameSettings.durations.wholeRound, constants.resetTotalBets);
     const container = new LotteryContainerRegistry().register(appConfigs, definition, gameData);
     const app = new Core.BaseGameApp(container);
 
