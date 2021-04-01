@@ -22,11 +22,7 @@ const schema = new mongoose.Schema({
 
     choices: choiceSchema,
 
-    thanhtoan: { type: Boolean, default: false },
-    betwin: { type: Number, default: 0 },
     time: { type: Date },
-    odds: { type: Object },
-
     memberId: { type: Number },
     siteId: { type: String },
     freeBet: { type: Boolean, default: false },
