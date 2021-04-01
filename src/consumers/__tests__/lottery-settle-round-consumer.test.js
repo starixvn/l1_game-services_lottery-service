@@ -51,6 +51,9 @@ describe("calculateBetResult test", () => {
                 },
             },
             totalAmount: 160,
+            toObject: function () {
+                return this;
+            },
         };
         const expectedTotalWin = 150 * gameData.gameConfigs.odds["4Sets"];
 
@@ -73,6 +76,9 @@ describe("calculateBetResult test", () => {
                 },
             },
             totalAmount: 60,
+            toObject: function () {
+                return this;
+            },
         };
         const expectedTotalWin = 50 * gameData.gameConfigs.odds["special"];
 
@@ -99,6 +105,9 @@ describe("calculateBetResult test", () => {
                 },
             },
             totalAmount: 40,
+            toObject: function () {
+                return this;
+            },
         };
         const expectedTotalWin = 10 * gameData.gameConfigs.odds["head"] + 10 * gameData.gameConfigs.odds["tail"];
 
@@ -124,6 +133,9 @@ describe("calculateBetResult test", () => {
                 },
             },
             totalAmount: 30,
+            toObject: function () {
+                return this;
+            },
         };
         const expectedTotalWin =
             10 * gameData.gameConfigs.odds["parlay2"] + 10 * gameData.gameConfigs.odds["parlay3"] + 10 * gameData.gameConfigs.odds["parlay4"];

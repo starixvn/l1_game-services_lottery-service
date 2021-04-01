@@ -41,8 +41,11 @@ export default class LotterySettleRoundConsumer extends SettleGameRoundConsumer 
     }
 
     calculateBetResult(settlementResult, bet, odds) {
-        const betResult = Object.entries(bet.choices).reduce(
+        const { choices } = bet.toObject();
+        const betResult = Object.entries(choices).reduce(
             (result, [betType, betChoices]) => {
+                console.log(betType);
+                console.log(lotteryBetResultCalculator[betType]);
                 const originalOdds = odds[betType] || 1;
                 const effectiveOdds = bet.freeBet ? originalOdds - 1 : originalOdds;
                 lotteryBetResultCalculator[betType](result, betChoices, settlementResult, effectiveOdds);
