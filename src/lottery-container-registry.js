@@ -8,6 +8,7 @@ import { LotteryNumberGenerator } from "./generators";
 import generatorDefinition from "./generators/generator-definition";
 import { RandomHelper } from "./helpers";
 import { LotteryBetLogs, LotteryBets, LotteryRounds } from "./models";
+import LotteryHistoryQuery from "./query-apis/lottery-history-query";
 
 const { asClass, asValue } = awilix;
 
@@ -51,6 +52,14 @@ export default class LotteryContainerRegistry extends Table.TableContainerRegist
 
         this.container.register({
             processBetQueue: asClass(LotteryProcessBetQueue).singleton().proxy(),
+        });
+    }
+
+    registerApis() {
+        super.registerApis();
+
+        this.container.register({
+            historyQuery: asClass(LotteryHistoryQuery).singleton(),
         });
     }
 }
