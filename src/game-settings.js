@@ -2,7 +2,7 @@ export default {
   id: 31,
   name: "Lottery",
   durations: {
-    wholeRound: 45,
+    wholeRound: 47,
     placingBets: 40,
     lockingBet: 5,
   },
