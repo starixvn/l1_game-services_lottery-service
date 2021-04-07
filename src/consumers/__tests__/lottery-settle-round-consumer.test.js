@@ -39,7 +39,7 @@ const settleRoundConsumer = new LotterySettleRoundConsumer({ definition, gameDat
 const lotteryNumberGenerator = new LotteryNumberGenerator(generatorDefinition, RandomHelper);
 
 describe("calculateBetResult test", () => {
-    it("4Setsbet test - should calculate win amount and total lost correctly", () => {
+    it("4Sets bet test - should calculate win amount and total lost correctly", () => {
         const generatedResult = lotteryNumberGenerator.generate();
         const settlementResult = getSettlementResult(generatedResult);
         const bet = {
@@ -117,6 +117,7 @@ describe("calculateBetResult test", () => {
         expect(actualResult.netWin).toEqual(expectedTotalWin - 20);
         expect(actualResult.totalLost).toEqual(20);
     });
+
     it("parlay bet test - should calculate win amount and total lost correctly", () => {
         const generatedResult = lotteryNumberGenerator.generate();
         const settlementResult = getSettlementResult(generatedResult);
@@ -144,7 +145,32 @@ describe("calculateBetResult test", () => {
 
         expect(actualResult.totalWin).toEqual(expectedTotalWin);
         expect(actualResult.winningByChoices["parlay2"]).toEqual(10 * gameData.gameConfigs.odds["parlay2"]);
-        expect(actualResult.netWin).toEqual(expectedTotalWin - 30);
+        expect(actualResult.netWin).toEqual(expectedTotalWin - bet.totalAmount);
         expect(actualResult.totalLost).toEqual(0);
+    });
+
+    it("odd/even bet test - should calculate win amount and total lost correctly", () => {
+        const generatedResult = lotteryNumberGenerator.generate();
+        const settlementResult = getSettlementResult(generatedResult);
+        const bet = {
+            choices: {
+                others: {
+                    odd: 10,
+                    even: 10,
+                },
+            },
+            totalAmount: 20,
+            toObject: function () {
+                return this;
+            },
+        };
+        const expectedTotalWin = 10 * gameData.gameConfigs.odds["others"];
+
+        var actualResult = settleRoundConsumer.calculateBetResult(settlementResult, bet, gameData.gameConfigs.odds);
+
+        expect(actualResult.totalWin).toEqual(expectedTotalWin);
+        expect(actualResult.winningByChoices["others"]).toEqual(10 * gameData.gameConfigs.odds["others"]);
+        expect(actualResult.netWin).toEqual(expectedTotalWin - 10);
+        expect(actualResult.totalLost).toEqual(10);
     });
 });

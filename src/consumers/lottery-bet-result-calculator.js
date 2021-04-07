@@ -132,7 +132,7 @@ export default {
                 const winAmount = amount * odds;
 
                 result.totalWin += winAmount;
-                result.winningByChoices["parlay4"] += winAmount;
+                result.winningByChoices["others"] += winAmount;
                 result.netWin += winAmount - amount;
             } else {
                 result.totalLost += amount;
