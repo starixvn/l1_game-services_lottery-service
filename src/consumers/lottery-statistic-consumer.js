@@ -1,0 +1,286 @@
+export default class LotteryStatisticConsumer {
+    constructor({ totalRounds, totalOfOthersStats }, roundsRepository) {
+        this.totalRounds = totalRounds;
+        this.totalOfOthersStats = totalOfOthersStats;
+        this.roundsRepository = roundsRepository;
+        this.settlementResults = [];
+
+        this.stats = this.initEmptyStats();
+    }
+
+    async init() {
+        this.settlementResults = await this.roundRepository
+            .find({}, { settlementResult: true }, { sort: { id: -1 }, limit: this.totalRounds })
+            .lean();
+    }
+
+    addNewRound(settlementResult) {
+        const lastResult = this.settlementResults.pop();
+        this.settlementResults.push(settlementResult);
+
+        this.updateStats(settlementResult, lastResult);
+
+        return this.stats;
+    }
+
+    updateStats(firstResult, lastResult) {
+        const firstStats = this.extractStatsFromResult(firstResult);
+        if (lastResult) {
+            const lastStats = this.extractStatsFromResult(lastResult);
+
+            Object.keys(firstStats.twoDigitsNumbers).forEach((twoDigits) => {
+                const lastCount = lastStats.twoDigitsNumbers[twoDigits] ? lastStats.twoDigitsNumbers[twoDigits] : 0;
+                const count = firstStats.twoDigitsNumbers[twoDigits] - lastCount;
+
+                this.stats.twoDigitsNumbers[twoDigits] += count;
+            });
+
+            Object.keys(firstStats.seventh).forEach((twoDigits) => {
+                const lastCount = lastStats.seventh[twoDigits] ? lastStats.seventh[twoDigits] : 0;
+                const count = firstStats.seventh[twoDigits] - lastCount;
+
+                this.stats.seventh[twoDigits] += count;
+            });
+
+            Object.keys(firstStats.special).forEach((twoDigits) => {
+                const lastCount = lastStats.special[twoDigits] ? lastStats.special[twoDigits] : 0;
+                const count = firstStats.special[twoDigits] - lastCount;
+
+                this.stats.special[twoDigits] += count;
+            });
+
+            Object.keys(firstStats.head).forEach((headNumber) => {
+                const count = firstStats.head[headNumber] - lastStats.head[headNumber];
+
+                this.stats.head[headNumber] += count;
+            });
+
+            Object.keys(firstStats.tail).forEach((tailNumber) => {
+                const count = firstStats.tail[tailNumber] - lastStats.tail[tailNumber];
+
+                this.stats.tail[tailNumber] += count;
+            });
+        } else {
+            this.stats = firstStats;
+        }
+
+        const { hot, cold } = this.extractHotAndCold(
+            this.stats.twoDigitsNumbers,
+            this.stats.seventh,
+            this.stats.special,
+            this.stats.head,
+            this.stats.tail
+        );
+
+        this.stats.hot = hot;
+        this.stats.cold = cold;
+        this.stats.othersPercentage = this.extractOthersPercentage();
+        this.stats.latest20.push(firstResult.others);
+
+        if (this.stats.latest20.length > 20) {
+            this.stats.latest20.pop();
+        }
+    }
+
+    extractStatsFromResult(settlementResult) {
+        const { others, head: headNumber, tail: tailNumber, special: specialNumber } = settlementResult;
+        const { all: twoDigits, seventh } = settlementResult.occurrences;
+        const stats = this.initEmptyStats();
+
+        Object.keys(twoDigits).forEach((number) => {
+            stats.twoDigitsNumbers[number] = twoDigits[number];
+        });
+
+        Object.keys(seventh).forEach((number) => {
+            stats.seventh[number] = seventh[number];
+        });
+
+        stats.others = others;
+        stats.head[headNumber] += 1;
+        stats.tail[tailNumber] += 1;
+        stats.special[specialNumber] += 1;
+
+        return stats;
+    }
+
+    initEmptyStats() {
+        const stats = {
+            head: [],
+            tail: [],
+            seventh: [],
+            special: [],
+            twoDigitsNumbers: [],
+            others: {
+                odd: 0,
+                even: 0,
+                big: 0,
+                small: 0,
+            },
+            latest20: [],
+            othersPercentage: {
+                big: 0,
+                small: 0,
+                odd: 0,
+                even: 0,
+            },
+            hot: {
+                sepecial: [],
+                parlays: [],
+                seventh: [],
+                head: [],
+                tail: [],
+            },
+            cold: {
+                sepecial: [],
+                parlays: [],
+                seventh: [],
+                head: [],
+                tail: [],
+            },
+        };
+
+        this.initHeadTail(stats);
+        this.initSets(stats);
+
+        return stats;
+    }
+
+    initHeadTail(stats) {
+        for (let index = 0; index < 10; index++) {
+            stats.head[index] = 0;
+            stats.tail[index] = 0;
+        }
+    }
+
+    initSets(stats) {
+        for (let index = 0; index < 100; index++) {
+            const number = index < 10 ? "0".concat(index) : "" + index;
+            stats.twoDigitsNumbers[number] = 0;
+            stats.special[number] = 0;
+            stats.seventh[number] = 0;
+        }
+    }
+
+    extractHotAndCold(twoDigits, seventh, special, head, tail) {
+        const stats = {
+            hot: {
+                sepecial: [],
+                parlays: [],
+                seventh: [],
+                head: [],
+                tail: [],
+            },
+            cold: {
+                sepecial: [],
+                parlays: [],
+                seventh: [],
+                head: [],
+                tail: [],
+            },
+        };
+
+        const { hot: hotParlay, cold: coldParlay } = this.extractHotColdNumbers(twoDigits);
+        stats.hot.parlays = hotParlay;
+        stats.cold.parlays = coldParlay;
+
+        const { hot: hot4Sets, cold: cold4Sets } = this.extractHotColdNumbers(seventh);
+        stats.hot.seventh = hot4Sets;
+        stats.cold.seventh = cold4Sets;
+
+        const { hot: hotSpecial, cold: coldSpecial } = this.extractHotColdNumbers(special);
+        stats.hot.special = hotSpecial;
+        stats.cold.special = coldSpecial;
+
+        const { hot: hotHead, cold: coldHead } = this.extractHotColdNumbersOfHeadTail(head);
+        stats.hot.head = hotHead;
+        stats.cold.head = coldHead;
+
+        const { hot: hotTail, cold: coldTail } = this.extractHotColdNumbersOfHeadTail(tail);
+        stats.hot.tail = hotTail;
+        stats.cold.tail = coldTail;
+
+        return stats;
+    }
+
+    sortDictionary(twoDigits) {
+        const items = Object.keys(twoDigits).map(function (key) {
+            return [key, twoDigits[key]];
+        });
+
+        // Sort the array based on the second element
+        items.sort(function (first, second) {
+            return second[1] - first[1];
+        });
+
+        return items;
+    }
+
+    extractHotColdNumbers(twoDigitsNumbers) {
+        const items = this.sortDictionary(twoDigitsNumbers);
+
+        const hot = items.slice(0, 10).reduce((list, item) => {
+            if (item[1] > 30) {
+                list[item[0]] = item[1];
+            }
+
+            return list;
+        }, {});
+
+        const cold = items.slice(items.length - 10, items.length).reduce((list, item) => {
+            list[item[0]] = item[1];
+
+            return list;
+        }, {});
+
+        return { hot, cold };
+    }
+
+    extractHotColdNumbersOfHeadTail(items) {
+        const hot = [];
+        const cold = [];
+
+        for (let index = 0; index < items.length; index++) {
+            const count = items[index];
+
+            if (count > 30) {
+                hot[index] = count;
+            } else {
+                cold[index] = count;
+            }
+        }
+
+        return { hot, cold };
+    }
+
+    extractOthersPercentage() {
+        const percentage = {
+            big: 0,
+            small: 0,
+            odd: 0,
+            even: 0,
+        };
+
+        const bigOddCounts = this.settlementResults.reduce(
+            (counter, item) => {
+                counter.big += item.others.big ? 1 : 0;
+                counter.odd += item.others.odd ? 1 : 0;
+
+                return counter;
+            },
+            { big: 0, odd: 0 }
+        );
+
+        const totalRounds = this.settlementResults.length;
+
+        percentage.big = (bigOddCounts.big / totalRounds) * 100;
+        percentage.small = 100 - percentage.big;
+        percentage.odd = (bigOddCounts.odd / totalRounds) * 100;
+        percentage.even = 100 - percentage.odd;
+
+        return percentage;
+    }
+
+    getStats() {
+        return this.stats;
+    }
+}
