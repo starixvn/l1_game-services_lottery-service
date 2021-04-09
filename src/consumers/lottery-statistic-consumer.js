@@ -10,9 +10,9 @@ export default class LotteryStatisticConsumer {
 
     async init() {
         const rounds = await this.roundsRepository.find({}, { settlementResult: true }, { sort: { id: -1 }, limit: this.totalRoundsOfStats }).lean();
+        rounds.reverse();
 
         rounds.forEach((round) => {
-            this.settlementResults.push(round.settlementResult);
             this.addNewRound(round.settlementResult);
         });
     }
@@ -87,7 +87,7 @@ export default class LotteryStatisticConsumer {
         this.stats.othersPercentage = this.extractOthersPercentage();
         this.stats.othersList.push(firstResult.others);
 
-        if (this.stats.othersList.length > this.totalRoundsOfStats) {
+        if (this.stats.othersList.length > this.totalOthersOfStats) {
             this.stats.othersList.pop();
         }
     }
@@ -281,9 +281,9 @@ export default class LotteryStatisticConsumer {
 
         const totalRoundsOfStats = this.settlementResults.length;
 
-        percentage.big = (bigOddCounts.big / totalRoundsOfStats) * 100;
+        percentage.big = Math.round((bigOddCounts.big / totalRoundsOfStats) * 100);
         percentage.small = 100 - percentage.big;
-        percentage.odd = (bigOddCounts.odd / totalRoundsOfStats) * 100;
+        percentage.odd = Math.round((bigOddCounts.odd / totalRoundsOfStats) * 100);
         percentage.even = 100 - percentage.odd;
 
         return percentage;

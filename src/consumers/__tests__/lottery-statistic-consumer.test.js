@@ -40,4 +40,35 @@ describe("updateStats test", () => {
         expect(Object.keys(stats.hot.parlays).length).toBe(10);
         expect(Object.values(stats.hot.parlays).filter((count) => count > 30).length).toBe(10);
     });
+
+    it("total values of head, tail, special should be correct", () => {
+        // arrange
+        const statistic = new LotteryStatisticConsumer({ totalRounds: 100, totalOfOthersStats: 20 }, null);
+
+        for (let index = 0; index < 30; index++) {
+            statistic.addNewRound(data.FirstSettlementResult);
+        }
+
+        // act
+        const stats = statistic.addNewRound(data.FirstSettlementResult);
+
+        // assert
+        expect(
+            stats.head.reduce((total, current) => {
+                return total + current;
+            }, 0)
+        ).toBe(31);
+
+        expect(
+            stats.tail.reduce((total, current) => {
+                return total + current;
+            }, 0)
+        ).toBe(31);
+
+        expect(
+            stats.special.reduce((total, current) => {
+                return total + current;
+            }, 0)
+        ).toBe(31);
+    });
 });
