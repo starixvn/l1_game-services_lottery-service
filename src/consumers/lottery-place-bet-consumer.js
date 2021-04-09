@@ -50,6 +50,29 @@ export default class LotteryPlaceBetConsumer extends Core.BaseEventConsumers.Pla
         return Object.values(betType).some((amount) => amount < 0);
     }
 
+    hasChoiceExceedMaxBet(player, betTracks, bet, amount) {
+        const maxBetPerBetType = ["parlay2", "parlay3", "parlay4"];
+        const configs = this.gameData.gameConfigs;
+
+        const betTypeKey = Object.keys(bet)[0];
+        const betType = bet[betTypeKey];
+
+        const maxBetPerType = Math.min(player.profile.maxBet, configs.choices_maxbet[betTypeKey]);
+
+        if (maxBetPerBetType.includes(betTypeKey)) {
+            const currentBetTypeTotalAmount = betTracks[betTypeKey]
+                ? Object.values(betTracks[betTypeKey]).reduce((total, amountOnChoice) => total + amountOnChoice, 0)
+                : 0;
+
+            return currentBetTypeTotalAmount + amount > maxBetPerType;
+        }
+
+        return Object.entries(betType).some(([betChoice, amountOnChoice]) => {
+            const currentBetAmount = betTracks[betTypeKey]?.[betChoice] ?? 0;
+            return currentBetAmount + amountOnChoice > maxBetPerType;
+        });
+    }
+
     composeBetAmountValidationCriteria(player, bet, amount, freeBet) {
         const configs = this.gameData.gameConfigs;
         const betTypeKey = Object.keys(bet)[0];
@@ -60,9 +83,6 @@ export default class LotteryPlaceBetConsumer extends Core.BaseEventConsumers.Pla
         };
 
         const currentTotalAmount = betTracks.totalAmount || 0;
-        const currentBetTypeTotalAmount = betTracks[betTypeKey]
-            ? Object.values(betTracks[betTypeKey]).reduce((total, amountOnChoice) => total + amountOnChoice, 0)
-            : 0;
 
         const minBet = Math.max(player.profile.minBet, configs.minbet);
         const maxBet = Math.min(player.profile.maxBet, configs.maxbet);
@@ -78,7 +98,7 @@ export default class LotteryPlaceBetConsumer extends Core.BaseEventConsumers.Pla
                 notice: noticeHelper.invalidBet,
             },
             {
-                failure: currentBetTypeTotalAmount + amount > maxBetPerType,
+                failure: this.hasChoiceExceedMaxBet(player, betTracks, bet, amount),
                 notice: noticeHelper.maxBetForChoice(maxBetPerType),
             },
             {

@@ -152,11 +152,11 @@ describe("composeBetAmountValidationCriteria test", () => {
             player01: {
                 betTracks: {
                     "4Sets": {
-                        10: 50,
+                        10: 150,
                         20: 50,
                         30: 50,
                     },
-                    totalAmount: 150,
+                    totalAmount: 250,
                 },
             },
         };
