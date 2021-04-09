@@ -10,7 +10,13 @@ import LotteryGameDefinition from "./lottery-game-definition";
 const run = async () => {
     const definition = new LotteryGameDefinition(gameSettings, generateResult, getSettlementResult);
     const gameData = new Table.TableGameData(gameSettings.durations.wholeRound, constants.resetTotalBets);
-    const container = new LotteryContainerRegistry().register(appConfigs, definition, gameData);
+    const container = new LotteryContainerRegistry().register(
+        appConfigs,
+        definition,
+        gameData,
+        gameSettings.totalRoundsOfStats,
+        gameSettings.totalOthersOfStats
+    );
     const app = new Core.BaseGameApp(container);
 
     await app.run();

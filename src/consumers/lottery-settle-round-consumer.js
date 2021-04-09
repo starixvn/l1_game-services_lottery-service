@@ -1,4 +1,5 @@
 import { SettleGameRoundConsumer } from "sc-game-base/src/core/event-consumers";
+
 import lotteryBetResultCalculator from "./lottery-bet-result-calculator";
 
 export default class LotterySettleRoundConsumer extends SettleGameRoundConsumer {
@@ -11,9 +12,11 @@ export default class LotterySettleRoundConsumer extends SettleGameRoundConsumer 
         roundsRepository,
         betsRepository,
         lotteryNumberGenerator,
+        statisticConsumer,
     }) {
         super({ definition, gameData, roundResultPublisher, userBetResultPublisher, endGame, roundsRepository, betsRepository });
         this.lotteryNumberGenerator = lotteryNumberGenerator;
+        this.statisticConsumer = statisticConsumer;
     }
 
     async settleRound() {
@@ -38,6 +41,8 @@ export default class LotterySettleRoundConsumer extends SettleGameRoundConsumer 
 
             await this.settleBets(finish);
         }
+
+        this.statisticConsumer.addNewRound(settlementResult);
     }
 
     calculateBetResult(settlementResult, bet, odds) {

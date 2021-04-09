@@ -1,7 +1,7 @@
 export default class LotteryStatisticConsumer {
-    constructor({ totalRounds, totalOfOthersStats }, roundsRepository) {
-        this.totalRounds = totalRounds;
-        this.totalOfOthersStats = totalOfOthersStats;
+    constructor(totalRoundsOfStats, totalOthersOfStats, roundsRepository) {
+        this.totalRoundsOfStats = totalRoundsOfStats;
+        this.totalOthersOfStats = totalOthersOfStats;
         this.roundsRepository = roundsRepository;
         this.settlementResults = [];
 
@@ -9,15 +9,18 @@ export default class LotteryStatisticConsumer {
     }
 
     async init() {
-        this.settlementResults = await this.roundRepository
-            .find({}, { settlementResult: true }, { sort: { id: -1 }, limit: this.totalRounds })
-            .lean();
+        const rounds = await this.roundsRepository.find({}, { settlementResult: true }, { sort: { id: -1 }, limit: this.totalRoundsOfStats }).lean();
+
+        rounds.forEach((round) => {
+            this.settlementResults.push(round.settlementResult);
+            this.addNewRound(round.settlementResult);
+        });
     }
 
     addNewRound(settlementResult) {
         const lastResult = this.settlementResults.slice(-1).pop();
         this.settlementResults.push(settlementResult);
-        const isRemoved = this.settlementResults.length > this.totalRounds;
+        const isRemoved = this.settlementResults.length > this.totalRoundsOfStats;
 
         if (isRemoved) {
             this.settlementResults.pop();
@@ -82,10 +85,10 @@ export default class LotteryStatisticConsumer {
         this.stats.hot = hot;
         this.stats.cold = cold;
         this.stats.othersPercentage = this.extractOthersPercentage();
-        this.stats.latest20.push(firstResult.others);
+        this.stats.othersList.push(firstResult.others);
 
-        if (this.stats.latest20.length > 20) {
-            this.stats.latest20.pop();
+        if (this.stats.othersList.length > this.totalRoundsOfStats) {
+            this.stats.othersList.pop();
         }
     }
 
@@ -123,7 +126,7 @@ export default class LotteryStatisticConsumer {
                 big: 0,
                 small: 0,
             },
-            latest20: [],
+            othersList: [],
             othersPercentage: {
                 big: 0,
                 small: 0,
@@ -214,7 +217,6 @@ export default class LotteryStatisticConsumer {
             return [key, twoDigits[key]];
         });
 
-        // Sort the array based on the second element
         items.sort(function (first, second) {
             return second[1] - first[1];
         });
@@ -277,17 +279,23 @@ export default class LotteryStatisticConsumer {
             { big: 0, odd: 0 }
         );
 
-        const totalRounds = this.settlementResults.length;
+        const totalRoundsOfStats = this.settlementResults.length;
 
-        percentage.big = (bigOddCounts.big / totalRounds) * 100;
+        percentage.big = (bigOddCounts.big / totalRoundsOfStats) * 100;
         percentage.small = 100 - percentage.big;
-        percentage.odd = (bigOddCounts.odd / totalRounds) * 100;
+        percentage.odd = (bigOddCounts.odd / totalRoundsOfStats) * 100;
         percentage.even = 100 - percentage.odd;
 
         return percentage;
     }
 
     getStats() {
-        return this.stats;
+        const { othersList, hot, cold, othersPercentage } = this.stats;
+        return {
+            othersList,
+            othersPercentage,
+            hot,
+            cold,
+        };
     }
 }
