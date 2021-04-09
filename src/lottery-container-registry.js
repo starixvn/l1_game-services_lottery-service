@@ -11,6 +11,7 @@ import generatorDefinition from "./generators/generator-definition";
 import { RandomHelper } from "./helpers";
 import { LotteryBetLogs, LotteryBets, LotteryRounds } from "./models";
 import LotteryHistoryQuery from "./query-apis/lottery-history-query";
+import LotterySocketRouter from "./routers/lottery-socket-router";
 
 const { asClass, asValue } = awilix;
 
@@ -69,6 +70,14 @@ export default class LotteryContainerRegistry extends Table.TableContainerRegist
 
         this.container.register({
             historyQuery: asClass(LotteryHistoryQuery).singleton(),
+        });
+    }
+
+    registerRouters() {
+        super.registerRouters();
+
+        this.container.register({
+            socketRouter: asClass(LotterySocketRouter).proxy(),
         });
     }
 }

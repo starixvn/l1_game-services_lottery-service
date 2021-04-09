@@ -1,10 +1,11 @@
 export default class LotteryStatisticConsumer {
-    constructor(totalRoundsOfStats, totalOthersOfStats, roundsRepository) {
+    constructor(totalRoundsOfStats, totalOthersOfStats, roundsRepository, publisher) {
         this.totalRoundsOfStats = totalRoundsOfStats;
         this.totalOthersOfStats = totalOthersOfStats;
         this.roundsRepository = roundsRepository;
-        this.settlementResults = [];
+        this.publisher = publisher;
 
+        this.settlementResults = [];
         this.stats = this.initEmptyStats();
     }
 
@@ -289,13 +290,16 @@ export default class LotteryStatisticConsumer {
         return percentage;
     }
 
-    getStats() {
+    consume(player, payload) {
         const { othersList, hot, cold, othersPercentage } = this.stats;
-        return {
-            othersList,
-            othersPercentage,
-            hot,
-            cold,
-        };
+
+        this.basePublisher.publishToUser(player.UID, {
+            stats: {
+                othersList,
+                othersPercentage,
+                hot,
+                cold,
+            },
+        });
     }
 }
