@@ -293,7 +293,7 @@ export default class LotteryStatisticConsumer {
     consume(player, payload) {
         const { othersList, hot, cold, othersPercentage } = this.stats;
 
-        this.basePublisher.publishToUser(player.UID, {
+        this.publisher.publishToUser(player.UID, {
             stats: {
                 othersList,
                 othersPercentage,
