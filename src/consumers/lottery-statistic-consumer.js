@@ -233,17 +233,13 @@ export default class LotteryStatisticConsumer {
         const items = this.sortDictionary(twoDigitsNumbers);
 
         const hot = items.slice(0, 10).reduce((list, item) => {
-            if (item[1] > this.hotFrequency) {
-                list[item[0]] = item[1];
-            }
+            list[item[0]] = item[1];
 
             return list;
         }, {});
 
         const cold = items.slice(items.length - 10, items.length).reduce((list, item) => {
-            if (item[1] < this.hotFrequency) {
-                list[item[0]] = item[1];
-            }
+            list[item[0]] = item[1];
 
             return list;
         }, {});
