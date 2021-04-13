@@ -1,5 +1,6 @@
 export default class LotteryStatisticConsumer {
     constructor(totalRoundsOfStats, totalOthersOfStats, roundsRepository, publisher) {
+        this.hotFrequency = 10;
         this.totalRoundsOfStats = totalRoundsOfStats;
         this.totalOthersOfStats = totalOthersOfStats;
         this.roundsRepository = roundsRepository;
@@ -232,7 +233,7 @@ export default class LotteryStatisticConsumer {
         const items = this.sortDictionary(twoDigitsNumbers);
 
         const hot = items.slice(0, 10).reduce((list, item) => {
-            if (item[1] > 10) {
+            if (item[1] > this.hotFrequency) {
                 list[item[0]] = item[1];
             }
 
@@ -240,7 +241,7 @@ export default class LotteryStatisticConsumer {
         }, {});
 
         const cold = items.slice(items.length - 10, items.length).reduce((list, item) => {
-            if (item[0] < 10) {
+            if (item[1] < this.hotFrequency) {
                 list[item[0]] = item[1];
             }
 
@@ -257,7 +258,7 @@ export default class LotteryStatisticConsumer {
         for (let index = 0; index < items.length; index++) {
             const count = items[index];
 
-            if (count > 10) {
+            if (count > this.hotFrequency) {
                 hot[index] = count;
             } else {
                 cold[index] = count;
