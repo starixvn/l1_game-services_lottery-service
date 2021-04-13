@@ -1,5 +1,5 @@
-export const FirstSettlementResult = {
-    "4Sets": ["70", "29", "84", "20"],
+export const result1 = {
+    "4Sets": ["70", "29", "84", "84"],
     "27Sets": [
         "11",
         "40",
@@ -66,15 +66,14 @@ export const FirstSettlementResult = {
             "08": 1,
         },
         seventh: {
-            20: 1,
             29: 1,
             70: 1,
-            84: 1,
+            84: 2,
         },
     },
 };
 
-export const SecondSettlementResult = {
+export const result2 = {
     "4Sets": ["46", "75", "51", "50"],
     "27Sets": [
         "18",
@@ -145,6 +144,82 @@ export const SecondSettlementResult = {
             50: 1,
             51: 1,
             75: 1,
+        },
+    },
+};
+
+export const result3 = {
+    "4Sets": ["46", "29", "45", "84"],
+    "27Sets": [
+        "11",
+        "86",
+        "67",
+        "37",
+        "48",
+        "49",
+        "47",
+        "83",
+        "75",
+        "68",
+        "56",
+        "10",
+        "33",
+        "82",
+        "11",
+        "77",
+        "96",
+        "63",
+        "89",
+        "50",
+        "61",
+        "87",
+        "52",
+        "12",
+        "68",
+        "45",
+        "48",
+    ],
+    special: "11",
+    head: "1",
+    tail: "1",
+    others: {
+        odd: true,
+        even: false,
+        big: true,
+        small: false,
+    },
+    occurrences: {
+        all: {
+            10: 1,
+            11: 2,
+            12: 1,
+            33: 1,
+            37: 1,
+            45: 1,
+            47: 1,
+            48: 2,
+            49: 1,
+            50: 1,
+            52: 1,
+            56: 1,
+            61: 1,
+            63: 1,
+            67: 1,
+            68: 2,
+            75: 1,
+            77: 1,
+            82: 1,
+            83: 1,
+            86: 1,
+            87: 1,
+            89: 1,
+            96: 1,
+        },
+        seventh: {
+            46: 1,
+            29: 1,
+            48: 1,
+            84: 1,
         },
     },
 };
