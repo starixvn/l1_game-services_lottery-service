@@ -240,7 +240,9 @@ export default class LotteryStatisticConsumer {
         }, {});
 
         const cold = items.slice(items.length - 10, items.length).reduce((list, item) => {
-            list[item[0]] = item[1];
+            if (item[0] < 10) {
+                list[item[0]] = item[1];
+            }
 
             return list;
         }, {});
