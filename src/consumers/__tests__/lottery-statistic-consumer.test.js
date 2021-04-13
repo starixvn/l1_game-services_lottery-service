@@ -27,7 +27,7 @@ describe("updateStats test", () => {
 
     it("should return 10 hot numbers", () => {
         // arrange
-        const statistic = new LotteryStatisticConsumer(100, 20, null, null);
+        const statistic = new LotteryStatisticConsumer(15, 20, null, null);
 
         for (let index = 0; index < 30; index++) {
             statistic.addNewRound(data.result1);
@@ -38,7 +38,25 @@ describe("updateStats test", () => {
 
         // assert
         expect(Object.keys(stats.hot.parlays).length).toBe(10);
-        expect(Object.values(stats.hot.parlays).filter((count) => count > 30).length).toBe(10);
+        expect(Object.keys(stats.hot.special).length).toBe(10);
+        expect(Object.keys(stats.hot.seventh).length).toBe(10);
+    });
+
+    it("should return 10 cold numbers", () => {
+        // arrange
+        const statistic = new LotteryStatisticConsumer(15, 20, null, null);
+
+        for (let index = 0; index < 30; index++) {
+            statistic.addNewRound(data.result1);
+        }
+
+        // act
+        const stats = statistic.addNewRound(data.result1);
+
+        // assert
+        expect(Object.keys(stats.cold.parlays).length).toBe(10);
+        expect(Object.keys(stats.cold.special).length).toBe(10);
+        expect(Object.keys(stats.cold.seventh).length).toBe(10);
     });
 
     it("total values of head, tail, special should be correct", () => {
