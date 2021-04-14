@@ -41,7 +41,7 @@ export default {
         },
     },
     sentry: {
-        sentryUrl: "https://7757a7be77e84fc6bea802bd0e049703@sentryuat.sabagame.com/232",
+        sentryUrl: "https://57fea4e7edf74feaa75a014b6de375d0@sentryuat.sabagame.com/184",
         logIdentifier: "lottery",
         env: "LOCAL-1",
     },
