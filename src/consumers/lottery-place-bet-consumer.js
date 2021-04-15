@@ -46,8 +46,8 @@ export default class LotteryPlaceBetConsumer extends Core.BaseEventConsumers.Pla
         },
     };
 
-    hasNegativeAmount(betType) {
-        return Object.values(betType).some((amount) => amount < 0);
+    hasZeroOrNegativeAmount(betType) {
+        return Object.values(betType).some((amount) => amount <= 0);
     }
 
     hasChoiceExceedMaxBet(player, betTracks, bet) {
@@ -84,7 +84,7 @@ export default class LotteryPlaceBetConsumer extends Core.BaseEventConsumers.Pla
                 notice: noticeHelper.invalidBet,
             },
             {
-                failure: this.hasNegativeAmount(betType),
+                failure: this.hasZeroOrNegativeAmount(betType),
                 notice: noticeHelper.invalidBet,
             },
             {
