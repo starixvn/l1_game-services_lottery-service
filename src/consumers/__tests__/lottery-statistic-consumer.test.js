@@ -1,5 +1,5 @@
+import * as data from "../__tests_data__/lottery-statistic-consumer-data";
 import LotteryStatisticConsumer from "../lottery-statistic-consumer";
-import * as data from "./lottery-statistic-consumer-data";
 
 describe("updateStats test", () => {
     it("should handle first settlement result normally", () => {
@@ -128,5 +128,21 @@ describe("updateStats test", () => {
         expect(stats.seventh["46"]).toBe(2);
         expect(stats.seventh["51"]).toBe(1);
         expect(stats.seventh["84"]).toBe(1);
+    });
+
+    it("2 digits subtract stats should be correct", () => {
+        // arrange
+        const statistic = new LotteryStatisticConsumer(2, 20, null, null);
+
+        statistic.addNewRound(data.result1);
+        statistic.addNewRound(data.result2);
+
+        // act
+        const stats = statistic.addNewRound(data.result3);
+
+        // assert
+        expect(stats.hot.parlays["11"]).toBe(2);
+        expect(stats.hot.parlays["13"]).toBe(3);
+        expect(stats.hot.parlays["20"]).toBe(3);
     });
 });
