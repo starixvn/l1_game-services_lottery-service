@@ -16,7 +16,7 @@ export default class LotteryNumberGenerator {
 
     generate() {
         const { prizes } = this.definition;
-        let generatedBoard = this.initEmptyBoard();
+        const generatedBoard = this.initEmptyBoard();
 
         Object.keys(prizes).forEach((name) => {
             const { max, total } = prizes[name];

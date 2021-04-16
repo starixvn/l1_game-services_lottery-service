@@ -90,11 +90,6 @@ export default class LotteryStatisticConsumer {
         this.stats.hot = hot;
         this.stats.cold = cold;
         this.stats.othersPercentage = this.extractOthersPercentage();
-        this.stats.othersList.push(firstResult.others);
-
-        if (this.stats.othersList.length > this.totalOthersOfStats) {
-            this.stats.othersList.pop();
-        }
     }
 
     extractStatsFromResult(settlementResult) {
@@ -131,7 +126,6 @@ export default class LotteryStatisticConsumer {
                 big: 0,
                 small: 0,
             },
-            othersList: [],
             othersPercentage: {
                 big: 0,
                 small: 0,
