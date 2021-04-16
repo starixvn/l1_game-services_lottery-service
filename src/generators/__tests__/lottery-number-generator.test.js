@@ -45,7 +45,7 @@ describe("lottery number generate test", () => {
 });
 
 describe("generator format number test", () => {
-    it("should format ones digit according to required length", () => {
+    it("should format digits according to required length", () => {
         // arrange
         const generator = new LotteryNumberGenerator(generatorDefinition, RandomHelper);
         const arrangements = [
@@ -53,87 +53,15 @@ describe("generator format number test", () => {
             { number: 7, requiredLength: 3, expectedNumber: "007", expectedTwoDigits: "07", actualResult: null },
             { number: 1, requiredLength: 4, expectedNumber: "0001", expectedTwoDigits: "01", actualResult: null },
             { number: 2, requiredLength: 5, expectedNumber: "00002", expectedTwoDigits: "02", actualResult: null },
-        ];
-
-        // act
-        arrangements.forEach((arrangement) => {
-            arrangement.actualResult = generator.formatNumber(arrangement.number, arrangement.requiredLength);
-        });
-
-        // assert
-        arrangements.forEach((arrangement) => {
-            expect(arrangement.actualResult.number).toEqual(arrangement.expectedNumber);
-            expect(arrangement.actualResult.twoDigitNumber).toEqual(arrangement.expectedTwoDigits);
-        });
-    });
-
-    it("should format tens digit according to required length", () => {
-        // arrange
-        const generator = new LotteryNumberGenerator(generatorDefinition, RandomHelper);
-        const arrangements = [
             { number: 13, requiredLength: 2, expectedNumber: "13", expectedTwoDigits: "13", actualResult: null },
             { number: 27, requiredLength: 3, expectedNumber: "027", expectedTwoDigits: "27", actualResult: null },
             { number: 81, requiredLength: 4, expectedNumber: "0081", expectedTwoDigits: "81", actualResult: null },
             { number: 52, requiredLength: 5, expectedNumber: "00052", expectedTwoDigits: "52", actualResult: null },
-        ];
-
-        // act
-        arrangements.forEach((arrangement) => {
-            arrangement.actualResult = generator.formatNumber(arrangement.number, arrangement.requiredLength);
-        });
-
-        // assert
-        arrangements.forEach((arrangement) => {
-            expect(arrangement.actualResult.number).toEqual(arrangement.expectedNumber);
-            expect(arrangement.actualResult.twoDigitNumber).toEqual(arrangement.expectedTwoDigits);
-        });
-    });
-
-    it("should format hundreds digit according to required length", () => {
-        // arrange
-        const generator = new LotteryNumberGenerator(generatorDefinition, RandomHelper);
-        const arrangements = [
             { number: 274, requiredLength: 3, expectedNumber: "274", expectedTwoDigits: "74", actualResult: null },
             { number: 811, requiredLength: 4, expectedNumber: "0811", expectedTwoDigits: "11", actualResult: null },
             { number: 520, requiredLength: 5, expectedNumber: "00520", expectedTwoDigits: "20", actualResult: null },
-        ];
-
-        // act
-        arrangements.forEach((arrangement) => {
-            arrangement.actualResult = generator.formatNumber(arrangement.number, arrangement.requiredLength);
-        });
-
-        // assert
-        arrangements.forEach((arrangement) => {
-            expect(arrangement.actualResult.number).toEqual(arrangement.expectedNumber);
-            expect(arrangement.actualResult.twoDigitNumber).toEqual(arrangement.expectedTwoDigits);
-        });
-    });
-
-    it("should format thousands digit according to required length", () => {
-        // arrange
-        const generator = new LotteryNumberGenerator(generatorDefinition, RandomHelper);
-        const arrangements = [
             { number: 8113, requiredLength: 4, expectedNumber: "8113", expectedTwoDigits: "13", actualResult: null },
             { number: 5208, requiredLength: 5, expectedNumber: "05208", expectedTwoDigits: "08", actualResult: null },
-        ];
-
-        // act
-        arrangements.forEach((arrangement) => {
-            arrangement.actualResult = generator.formatNumber(arrangement.number, arrangement.requiredLength);
-        });
-
-        // assert
-        arrangements.forEach((arrangement) => {
-            expect(arrangement.actualResult.number).toEqual(arrangement.expectedNumber);
-            expect(arrangement.actualResult.twoDigitNumber).toEqual(arrangement.expectedTwoDigits);
-        });
-    });
-
-    it("should format ten thousands digit according to required length", () => {
-        // arrange
-        const generator = new LotteryNumberGenerator(generatorDefinition, RandomHelper);
-        const arrangements = [
             { number: 82113, requiredLength: 5, expectedNumber: "82113", expectedTwoDigits: "13", actualResult: null },
             { number: 52078, requiredLength: 5, expectedNumber: "52078", expectedTwoDigits: "78", actualResult: null },
         ];

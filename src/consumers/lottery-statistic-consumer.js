@@ -163,7 +163,8 @@ export default class LotteryStatisticConsumer {
 
     initSets(stats) {
         for (let index = 0; index < 100; index++) {
-            const number = index < 10 ? "0".concat(index) : "" + index;
+            const prefix = index < 10 ? "0" : "";
+            const number = `${prefix}${index}`;
             stats.twoDigitsNumbers[number] = 0;
             stats.special[number] = 0;
             stats.seventh[number] = 0;
@@ -226,19 +227,16 @@ export default class LotteryStatisticConsumer {
     extractHotColdNumbers(twoDigitsNumbers) {
         const items = this.sortDictionary(twoDigitsNumbers);
 
-        const hot = items.slice(0, 10).reduce((list, item) => {
-            list[item[0]] = item[1];
-
-            return list;
-        }, {});
-
-        const cold = items.slice(items.length - 10, items.length).reduce((list, item) => {
-            list[item[0]] = item[1];
-
-            return list;
-        }, {});
+        const hot = items.slice(0, 10).reduce((list, item) => this.convertArray(list, item), {});
+        const cold = items.slice(items.length - 10, items.length).reduce((list, item) => this.convertArray(list, item), {});
 
         return { hot, cold };
+    }
+
+    convertArray(list, item) {
+        list[item[0]] = item[1];
+
+        return list;
     }
 
     extractHotColdNumbersOfHeadTail(items) {
