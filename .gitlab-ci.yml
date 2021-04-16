@@ -30,10 +30,24 @@ include:
   - project: "ci/repos-ci/pentagon_l1_lottery_service"
     ref: master
     file: ".gitlab-ci/lottery_service/build.gitlab-ci.yml"
+  - project: "ci/repos-ci/pentagon_l1_lottery_service"
+    ref: master
     file: ".gitlab-ci/lottery_service/deploy-vars.gitlab-ci.yml"
+  - project: "ci/repos-ci/pentagon_l1_lottery_service"
+    ref: master
     file: ".gitlab-ci/lottery_service/rules.gitlab-ci.yml"
+  - project: "ci/repos-ci/pentagon_l1_lottery_service"
+    ref: master
     file: ".gitlab-ci/lottery_service/deploy-local.gitlab-ci.yml"
+  - project: "ci/repos-ci/pentagon_l1_lottery_service"
+    ref: master
     file: ".gitlab-ci/lottery_service/deploy-sit.gitlab-ci.yml"
+  - project: "ci/repos-ci/pentagon_l1_lottery_service"
+    ref: master
     file: ".gitlab-ci/lottery_service/deploy-uat.gitlab-ci.yml"
+  - project: "ci/repos-ci/pentagon_l1_lottery_service"
+    ref: master
     file: ".gitlab-ci/lottery_service/deploy-prod.gitlab-ci.yml"
+  - project: "ci/repos-ci/pentagon_l1_lottery_service"
+    ref: master
     file: ".gitlab-ci/lottery_service/deploy-aws.gitlab-ci.yml"
