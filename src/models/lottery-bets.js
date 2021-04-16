@@ -33,6 +33,21 @@ const schema = new mongoose.Schema({
     freeBet: { type: Boolean, default: false },
 });
 
+const betLogsSchema = new mongoose.Schema({
+    uid: { type: String, required: true },
+    name: { type: String, required: true },
+    phien: { type: Number, required: true },
+
+    choices: choiceSchema,
+
+    time: { type: Date },
+    memberId: { type: Number },
+    siteId: { type: String },
+    freeBet: { type: Boolean, default: false },
+});
+
+const LotteryBetLogs = mongoose.model("lottery_cuoc", betLogsSchema);
+
 const LotteryBets = mongoose.model("lottery_one", schema);
 
-export default LotteryBets;
+export { LotteryBets, LotteryBetLogs };
