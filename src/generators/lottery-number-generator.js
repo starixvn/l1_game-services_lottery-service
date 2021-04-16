@@ -33,7 +33,7 @@ export default class LotteryNumberGenerator {
     }
 
     reload(board) {
-        let generatedBoard = this.initEmptyBoard();
+        const generatedBoard = this.initEmptyBoard();
 
         Object.keys(board).forEach((name) => {
             board[name].forEach((number) => {
