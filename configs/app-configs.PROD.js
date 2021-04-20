@@ -2,7 +2,7 @@ export default {
     hostingPort: 5000,
     apiSettings: {
         enabledApi: true,
-        apiUrl: "http://10.2.189.51:7300/",
+        apiUrl: "http://10.2.189.51:7300",
         authUrl: "http://10.2.189.51:7303/",
         client: {
             id: "game-server",
