@@ -46,22 +46,21 @@ describe("calculateBetResult test", () => {
             choices: {
                 "4Sets": {
                     [settlementResult["4Sets"][0]]: 100,
-                    [settlementResult["4Sets"][1]]: 50,
                     100: 10,
                 },
             },
-            totalAmount: 160,
+            totalAmount: 110,
             toObject: function () {
                 return this;
             },
         };
-        const expectedTotalWin = 150 * gameData.gameConfigs.odds["4Sets"];
+        const expectedTotalWin = 100 * gameData.gameConfigs.odds["4Sets"] * settlementResult.occurrences.seventh[settlementResult["4Sets"][0]];
 
         var actualResult = settleRoundConsumer.calculateBetResult(settlementResult, bet, gameData.gameConfigs.odds);
 
         expect(actualResult.totalWin).toEqual(expectedTotalWin);
         expect(actualResult.winningByChoices["4Sets"]).toEqual(expectedTotalWin);
-        expect(actualResult.netWin).toEqual(expectedTotalWin - 150);
+        expect(actualResult.netWin).toEqual(expectedTotalWin - 100);
         expect(actualResult.totalLost).toEqual(10);
     });
 
