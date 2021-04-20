@@ -3,7 +3,7 @@ export default {
     apiSettings: {
         enabledApi: true,
         apiUrl: "https://10.2.189.51:7300/",
-        url: "http://10.2.189.51:7303",
+        authUrl: "http://10.2.189.51:7303/api",
         client: {
             id: "game-server",
             secret: "gameserver@20luminet&",
