@@ -2,7 +2,7 @@ export default {
     hostingPort: 5000,
     apiSettings: {
         enabledApi: true,
-        apiUrl: "https://10.2.189.51:7300/",
+        apiUrl: "https://uat-api.sabagame.com/",
         authUrl: "http://10.2.189.51:7303/",
         client: {
             id: "game-server",
