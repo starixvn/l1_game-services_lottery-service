@@ -1,13 +1,14 @@
 export default {
-    hostingPort: 8089,
+    hostingPort: 8085,
     apiSettings: {
         enabledApi: true,
-        apiUrl: "http://api.lumigame.com",
-        authUrl: "http://auth.lumigame.com",
+        apiUrl: "http://l2-api.lumigame.com",
+        authUrl: "http://l2-auth.lumigame.com",
         client: {
             id: "game-server",
             secret: "gameserver@20luminet&",
         },
+
         useAuthenticate: true,
         requestTimeout: 10000,
         placeBetTimeout: 4500,
@@ -16,11 +17,12 @@ export default {
     mainServerApiSettings: {
         url: "http://localhost:8080/api",
         auth: {
-            url: "http://auth.lumigame.com",
+            url: "http://l2-auth.lumigame.com",
             id: "game-services",
             secret: "gameservices@20luminet&",
         },
         requestTimeout: 10000,
+        placeBetTimeout: 4500,
         useAuthenticate: true,
     },
     socketOptions: {
@@ -40,7 +42,7 @@ export default {
         },
     },
     sentry: {
-        sentryUrl: "https://bfcba2ed6dbc4d4193bba01981b2812d@sentryuat.sabagame.com/19",
+        sentryUrl: "https://a5c85e9a86a342eb95353093079c926f@sentryuat.sabagame.com/55",
         logIdentifier: "lottery",
         env: "LOCAL",
     },
@@ -49,5 +51,5 @@ export default {
     },
     adminSecretKey: "asWDEerfOIdgsdqRTFabvmgh",
     enableCorsWs: false,
-    corsUrls: ["http://localhost:7456", "http://localhost:7000", "http://games.lumigame.com", "http://admin.lumigame.com"],
+    corsUrls: ["http://localhost:7456", "http://localhost:7000", "http://l2-games.lumigame.com", "http://l2-admin.lumigame.com"],
 };
