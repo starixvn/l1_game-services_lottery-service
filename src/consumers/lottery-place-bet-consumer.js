@@ -92,7 +92,7 @@ export default class LotteryPlaceBetConsumer extends Core.BaseEventConsumers.Pla
                 notice: noticeHelper.maxBetForChoice(maxBetPerType),
             },
             {
-                failure: amount < minBet,
+                failure: amount < minBet || Object.values(betType).some((amountOnChoice) => amountOnChoice < minBet),
                 notice: noticeHelper.minBet(minBet),
             },
             {
