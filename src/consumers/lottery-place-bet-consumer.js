@@ -1,8 +1,8 @@
 import noticeHelper from "sc-common/helpers/notice-helper";
-import { Core } from "sc-game-base";
+import { PlaceBetConsumer } from "sc-game-base/src/core/event-consumers";
 import constants from "../constants";
 
-export default class LotteryPlaceBetConsumer extends Core.BaseEventConsumers.PlaceBetConsumer {
+export default class LotteryPlaceBetConsumer extends PlaceBetConsumer {
     betChoiceValidateor = {
         "4Sets": function (betChoiceKeys) {
             return betChoiceKeys.every((choice) => !isNaN(choice) && choice.length === 2);
@@ -81,23 +81,23 @@ export default class LotteryPlaceBetConsumer extends Core.BaseEventConsumers.Pla
         return [
             {
                 failure: freeBet && !configs.enableFreeBet,
-                notice: noticeHelper.invalidBet,
+                notice: this.getNoticeObj(noticeHelper.invalidBet),
             },
             {
                 failure: this.hasZeroOrNegativeAmount(betType),
-                notice: noticeHelper.invalidBet,
+                notice: this.getNoticeObj(noticeHelper.invalidBet),
             },
             {
                 failure: this.hasChoiceExceedMaxBet(player, betTracks, bet),
-                notice: noticeHelper.maxBetForChoice(maxBetPerType),
+                notice: this.getNoticeObj(noticeHelper.maxBetForChoice, { maxBet: maxBetPerType }),
             },
             {
                 failure: amount < minBet,
-                notice: noticeHelper.minBet(minBet),
+                notice: this.getNoticeObj(noticeHelper.minBet),
             },
             {
                 failure: currentTotalAmount + amount > maxBet,
-                notice: noticeHelper.maxBet(maxBet),
+                notice: this.getNoticeObj(noticeHelper.maxBet),
             },
         ];
     }
@@ -116,18 +116,18 @@ export default class LotteryPlaceBetConsumer extends Core.BaseEventConsumers.Pla
                         betChoiceKeys.length < 1 ||
                         betChoiceKeys.length > constants.maxChoices[betType] ||
                         !this.betChoiceValidateor[betType](betChoiceKeys),
-                    notice: noticeHelper.invalidBet,
+                    notice: this.getNoticeObj(noticeHelper.invalidBet),
                 });
             } else {
                 criterons.push({
                     failure: true,
-                    notice: noticeHelper.invalidBet,
+                    notice: this.getNoticeObj(noticeHelper.invalidBet),
                 });
             }
         } else {
             criterons.push({
                 failure: true,
-                notice: noticeHelper.invalidBet,
+                notice: this.getNoticeObj(noticeHelper.invalidBet),
             });
         }
 
