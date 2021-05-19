@@ -2,8 +2,8 @@ export default {
     hostingPort: 5000,
     apiSettings: {
         enabledApi: true,
-        apiUrl: "http://l1_game_api_AWS:5000",
-        authUrl: "http://l1_auth_api_AWS:5000",
+        apiUrl: "http://l2_game_api_AWS:5000",
+        authUrl: "http://l2_auth_api_AWS:5000",
         client: {
             id: "game-server",
             secret: "gameserver@20luminet&",
@@ -14,25 +14,25 @@ export default {
         enabledApiLogs: true,
     },
     mainServerApiSettings: {
-        url: "http://l1_game_server_AWS:5000/api",
+        url: "http://l2_game_server_AWS:5000/api",
         auth: {
-            url: "http://l1_auth_api_AWS:5000",
+            url: "http://l2_auth_api_AWS:5000",
             id: "game-services",
             secret: "gameservices@20luminet&",
         },
         requestTimeout: 10000,
         useAuthenticate: true,
     },
-
     socketOptions: {
         pingInterval: 60 * 1000,
         pingTimeout: 60 * 1000,
         transports: ["websocket"],
         allowUpgrades: false,
+        perMessageDeflate: false,
     },
     enabledLogs: true,
     database: {
-        url: "mongodb://lmn_backend:Sb%7B5r%40Xy4X%256%28%24%5Bt%252HsOxJ%7CQt9jdR%26t@10.99.99.56:27101/?replicaSet=L1_SabaAWS",
+        url: "mongodb://lmn_backend:ilthODrRz8C4s2%5D%7B%7CLV%3Du%5D2vsf6o%5Ex0m@10.99.99.56:37101/?replicaSet=L2_SabaAWS",
         options: {
             dbName: "minigame",
             useNewUrlParser: true,
@@ -41,7 +41,7 @@ export default {
         },
     },
     sentry: {
-        sentryUrl: "https://ae7cbd9cc519424cba4bdaf7344f5136@sentry.sabagame.com/134",
+        sentryUrl: "http://2b5b82bf699543ddb296364568bc30be@sentry.sabagame.com/52",
         logIdentifier: "lottery",
         env: "AWS",
     },
@@ -50,5 +50,5 @@ export default {
     },
     adminSecretKey: "asWDEer4yGdgsdqR4uqmKQZgh",
     enableCorsWs: true,
-    corsUrls: ["https://sc1-games.sportsfun.app", "https://sc1-adm.sportsfun.app"],
+    corsUrls: ["https://sc2-games.sportsfun.app", "https://sc2-adm.sportsfun.app"],
 };

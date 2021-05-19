@@ -2,8 +2,8 @@ export default {
     hostingPort: 5000,
     apiSettings: {
         enabledApi: true,
-        apiUrl: "http://l1_game_api_local:5000",
-        authUrl: "http://l1_auth_api_local:5000",
+        apiUrl: "http://l2_game_api_local:5000",
+        authUrl: "http://l2_auth_api_local:5000",
         client: {
             id: "game-server",
             secret: "gameserver@20luminet&",
@@ -14,9 +14,9 @@ export default {
         enabledApiLogs: true,
     },
     mainServerApiSettings: {
-        url: "http://l1_game_server_local:5000/api",
+        url: "http://l2_game_server_local:5000/api",
         auth: {
-            url: "http://l1_auth_api_local:5000",
+            url: "http://l2_auth_api_local:5000",
             id: "game-services",
             secret: "gameservices@20luminet&",
         },
@@ -32,7 +32,7 @@ export default {
     },
     enabledLogs: true,
     database: {
-        url: "mongodb://lmn_backend:LmnBackend@10.10.50.13:27101/?replicaSet=L1Local",
+        url: "mongodb://lmn_backend:LmnBackend@10.10.50.13:37101/?replicaSet=L2Local",
         options: {
             dbName: "minigame",
             useNewUrlParser: true,
@@ -41,7 +41,7 @@ export default {
         },
     },
     sentry: {
-        sentryUrl: "https://bfcba2ed6dbc4d4193bba01981b2812d@sentryuat.sabagame.com/19",
+        sentryUrl: "https://a5c85e9a86a342eb95353093079c926f@sentryuat.sabagame.com/55",
         logIdentifier: "lottery",
         env: "LOCAL",
     },
@@ -50,5 +50,5 @@ export default {
     },
     adminSecretKey: "asWDEerfOIdgsdqRTFabvmgh",
     enableCorsWs: true,
-    corsUrls: ["http://localhost:7456", "http://localhost:7000", "http://games.lumigame.com", "http://admin.lumigame.com"],
+    corsUrls: ["http://localhost:7456", "http://localhost:7000", "http://l2-games.lumigame.com", "http://l2-admin.lumigame.com"],
 };

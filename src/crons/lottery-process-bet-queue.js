@@ -86,4 +86,29 @@ export default class LotteryProcessBetQueue extends ProcessBetQueue {
         const betType = Object.keys(betChoice)[0];
         this.gameData.totalBets[betType] = (this.gameData.totalBets[betType] ?? 0) + amount;
     }
+
+    generatePlacingBetResult(player, balance, bet) {
+        const { betChoice, amount } = bet;
+        const ownBet = super.generatePlacingBetResult(player, balance, bet);
+
+        ownBet.ownChip = { betChoice, amount };
+
+        if (this.gameData.chips) {
+            const betTypeKey = Object.keys(betChoice)[0];
+            for (const [betChoiceKey, amountOnChoice] of Object.entries(betChoice[betTypeKey])) {
+                if (!this.gameData.chips[betTypeKey]) {
+                    this.gameData.chips[betTypeKey] = {};
+                }
+                this.gameData.chips[betTypeKey][betChoiceKey] = this.gameData.chips[betTypeKey][betChoiceKey] ?? {};
+                this.gameData.chips[betTypeKey][betChoiceKey][amountOnChoice] =
+                    (this.gameData.chips[betTypeKey][betChoiceKey][amountOnChoice] ?? 0) + 1;
+            }
+        }
+
+        if (this.gameData.players[player.UID]) {
+            this.gameData.players[player.UID].red = balance.red;
+        }
+
+        return ownBet;
+    }
 }

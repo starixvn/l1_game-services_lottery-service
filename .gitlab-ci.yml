@@ -6,8 +6,8 @@ stages:
   - deploy
 
 variables:
-  DOCKER_COMPOSE_REPO_URL: git@git3.nexdev.net:ci/repos-ci/pentagon_l1_lottery_service.git
-  PROJECT_NAME: l1-lottery-service
+  DOCKER_COMPOSE_REPO_URL: git@git3.nexdev.net:ci/repos-ci/pentagon_l2_lottery_service.git
+  PROJECT_NAME: l2-lottery-service
 
 include:
   - project: "ci/common-ci"
@@ -28,27 +28,27 @@ include:
   - project: 'ci/common-ci'
     ref: rocketor
     file: '_teams/luminet/pentagon/deploy-docker-swarm-stack/index.gitlab-ci.yml'
-  - project: "ci/repos-ci/pentagon_l1_lottery_service"
+  - project: "ci/repos-ci/pentagon_l2_lottery_service"
     ref: master
     file: ".gitlab-ci/lottery_service/build.gitlab-ci.yml"
-  - project: "ci/repos-ci/pentagon_l1_lottery_service"
+  - project: "ci/repos-ci/pentagon_l2_lottery_service"
     ref: master
     file: ".gitlab-ci/lottery_service/deploy-vars.gitlab-ci.yml"
-  - project: "ci/repos-ci/pentagon_l1_lottery_service"
+  - project: "ci/repos-ci/pentagon_l2_lottery_service"
     ref: master
     file: ".gitlab-ci/lottery_service/rules.gitlab-ci.yml"
-  - project: "ci/repos-ci/pentagon_l1_lottery_service"
+  - project: "ci/repos-ci/pentagon_l2_lottery_service"
     ref: master
     file: ".gitlab-ci/lottery_service/deploy-local.gitlab-ci.yml"
-  - project: "ci/repos-ci/pentagon_l1_lottery_service"
+  - project: "ci/repos-ci/pentagon_l2_lottery_service"
     ref: master
     file: ".gitlab-ci/lottery_service/deploy-sit.gitlab-ci.yml"
-  - project: "ci/repos-ci/pentagon_l1_lottery_service"
+  - project: "ci/repos-ci/pentagon_l2_lottery_service"
     ref: master
     file: ".gitlab-ci/lottery_service/deploy-uat.gitlab-ci.yml"
-  - project: "ci/repos-ci/pentagon_l1_lottery_service"
+  - project: "ci/repos-ci/pentagon_l2_lottery_service"
     ref: master
     file: ".gitlab-ci/lottery_service/deploy-prod.gitlab-ci.yml"
-  - project: "ci/repos-ci/pentagon_l1_lottery_service"
+  - project: "ci/repos-ci/pentagon_l2_lottery_service"
     ref: master
     file: ".gitlab-ci/lottery_service/deploy-aws.gitlab-ci.yml"

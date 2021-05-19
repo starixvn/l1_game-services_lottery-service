@@ -6,7 +6,7 @@ export default {
         placingBets: 45,
         lockingBet: 5,
     },
-    betTypes: ["4Sets", "special", "head", "tail", "27Sets", "parlay2", "parlay3", "parlay4", "others"],
+    betTypes: ["4Sets", "special", "head", "tail", "27Sets", "others"],
     choices: [],
     defaultBetTracks: {},
     totalRoundsOfStats: 100,
