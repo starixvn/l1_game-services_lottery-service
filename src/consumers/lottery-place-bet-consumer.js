@@ -93,11 +93,11 @@ export default class LotteryPlaceBetConsumer extends PlaceBetConsumer {
             },
             {
                 failure: amount < minBet,
-                notice: this.getNoticeObj(noticeHelper.minBet),
+                notice: this.getNoticeObj(noticeHelper.minBet, { minBet }),
             },
             {
                 failure: currentTotalAmount + amount > maxBet,
-                notice: this.getNoticeObj(noticeHelper.maxBet),
+                notice: this.getNoticeObj(noticeHelper.maxBet, { maxBet }),
             },
         ];
     }
