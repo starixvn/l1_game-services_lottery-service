@@ -9043,10 +9043,10 @@
     "mongoose-long" "^0.3.0"
     "numeral" "^2.0.6"
 
-"sc-game-base@~1.22.4-beta.2":
-  "integrity" "sha512-EgHBTonRTUzYJT2dx/6WVTIE8OW+P0USolrRv+gUT1OzpzrNg0IT4JkpAD1oOJU0eXm4YezC0FvsaZB0p6DViw=="
-  "resolved" "http://npm.lumigame.com/sc-game-base/-/sc-game-base-1.22.4-beta.2.tgz"
-  "version" "1.22.4-beta.2"
+"sc-game-base@~1.22.4-beta.3":
+  "integrity" "sha512-2sG6EOe23qtIeWKh/ewAaXa4MZ6s7NCfHjnB8nF+cxApZOaL6KAmCAxVYiArg2UJrn4xHqzYRzQU6ccEAWarcw=="
+  "resolved" "http://npm.lumigame.com/sc-game-base/-/sc-game-base-1.22.4-beta.3.tgz"
+  "version" "1.22.4-beta.3"
   dependencies:
     "awilix" "^4.3.1"
     "axios" "^0.20.0"
