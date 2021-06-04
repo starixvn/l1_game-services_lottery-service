@@ -1,5 +1,6 @@
 import noticeHelper from "sc-common/helpers/notice-helper";
 import { PlaceBetConsumer } from "sc-game-base/src/core/event-consumers";
+
 import constants from "../constants";
 
 export default class LotteryPlaceBetConsumer extends PlaceBetConsumer {
@@ -171,6 +172,7 @@ export default class LotteryPlaceBetConsumer extends PlaceBetConsumer {
         const { betChoice } = payload;
         payload.amount = 0;
         payload.freeBet = payload.freeBet ?? false;
+        payload.roundId = this.gameData.roundId,
 
         for (const betType of Object.values(betChoice)) {
             for (const choice of Object.keys(betType)) {
