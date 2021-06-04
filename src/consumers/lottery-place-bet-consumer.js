@@ -172,7 +172,7 @@ export default class LotteryPlaceBetConsumer extends PlaceBetConsumer {
         const { betChoice } = payload;
         payload.amount = 0;
         payload.freeBet = payload.freeBet ?? false;
-        payload.roundId = this.gameData.roundId,
+        payload.roundId = this.gameData.roundId;
 
         for (const betType of Object.values(betChoice)) {
             for (const choice of Object.keys(betType)) {
