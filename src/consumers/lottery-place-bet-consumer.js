@@ -20,27 +20,6 @@ export default class LotteryPlaceBetConsumer extends PlaceBetConsumer {
         "27Sets": function (betChoiceKeys) {
             return betChoiceKeys.every((choice) => !isNaN(choice) && choice.length === 2);
         },
-        parlay2: function (betChoiceKeys) {
-            return betChoiceKeys.every((choice) => {
-                const numbers = choice.split("-");
-
-                return numbers.length === 2 && numbers.every((x) => !isNaN(x) && x.length === 2);
-            });
-        },
-        parlay3: function (betChoiceKeys) {
-            return betChoiceKeys.every((choice) => {
-                const numbers = choice.split("-");
-
-                return numbers.length === 3 && numbers.every((x) => !isNaN(x) && x.length === 2);
-            });
-        },
-        parlay4: function (betChoiceKeys) {
-            return betChoiceKeys.every((choice) => {
-                const numbers = choice.split("-");
-
-                return numbers.length === 4 && numbers.every((x) => !isNaN(x) && x.length === 2);
-            });
-        },
         others: function (betChoiceKeys) {
             const availableChoices = ["odd", "even", "big", "small"];
             return betChoiceKeys.every((choice) => availableChoices.includes(choice));
