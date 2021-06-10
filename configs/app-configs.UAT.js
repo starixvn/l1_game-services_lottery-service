@@ -41,7 +41,7 @@ export default {
         },
     },
     sentry: {
-        sentryUrl: "http://7ba626fc5eea40709545d4adf36975c6@10.99.99.187:800/24",
+        sentryUrl: "http://7ba626fc5eea40709545d4adf36975c6@10.99.99.187:800/29",
         logIdentifier: "lottery",
         env: "UAT",
     },

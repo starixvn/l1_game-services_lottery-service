@@ -5,7 +5,7 @@ export default class LotteryProcessBetQueue extends ProcessBetQueue {
         return {
             amount: payload.amount,
             gameId: this.definition.id,
-            gameRoundId: this.gameData.roundId,
+            gameRoundId: payload.roundId,
             freeBet: payload.freeBet,
         };
     }

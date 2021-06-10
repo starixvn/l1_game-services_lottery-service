@@ -1,8 +1,9 @@
 import noticeHelper from "sc-common/helpers/notice-helper";
-import { Core } from "sc-game-base";
+import { PlaceBetConsumer } from "sc-game-base/src/core/event-consumers";
+
 import constants from "../constants";
 
-export default class LotteryPlaceBetConsumer extends Core.BaseEventConsumers.PlaceBetConsumer {
+export default class LotteryPlaceBetConsumer extends PlaceBetConsumer {
     betChoiceValidateor = {
         "4Sets": function (betChoiceKeys) {
             return betChoiceKeys.every((choice) => !isNaN(choice) && choice.length === 2);
@@ -18,27 +19,6 @@ export default class LotteryPlaceBetConsumer extends Core.BaseEventConsumers.Pla
         },
         "27Sets": function (betChoiceKeys) {
             return betChoiceKeys.every((choice) => !isNaN(choice) && choice.length === 2);
-        },
-        parlay2: function (betChoiceKeys) {
-            return betChoiceKeys.every((choice) => {
-                const numbers = choice.split("-");
-
-                return numbers.length === 2 && numbers.every((x) => !isNaN(x) && x.length === 2);
-            });
-        },
-        parlay3: function (betChoiceKeys) {
-            return betChoiceKeys.every((choice) => {
-                const numbers = choice.split("-");
-
-                return numbers.length === 3 && numbers.every((x) => !isNaN(x) && x.length === 2);
-            });
-        },
-        parlay4: function (betChoiceKeys) {
-            return betChoiceKeys.every((choice) => {
-                const numbers = choice.split("-");
-
-                return numbers.length === 4 && numbers.every((x) => !isNaN(x) && x.length === 2);
-            });
         },
         others: function (betChoiceKeys) {
             const availableChoices = ["odd", "even", "big", "small"];
@@ -81,23 +61,23 @@ export default class LotteryPlaceBetConsumer extends Core.BaseEventConsumers.Pla
         return [
             {
                 failure: freeBet && !configs.enableFreeBet,
-                notice: noticeHelper.invalidBet,
+                notice: this.getNoticeObj(noticeHelper.invalidBet),
             },
             {
                 failure: this.hasZeroOrNegativeAmount(betType),
-                notice: noticeHelper.invalidBet,
+                notice: this.getNoticeObj(noticeHelper.invalidBet),
             },
             {
                 failure: this.hasChoiceExceedMaxBet(player, betTracks, bet),
-                notice: noticeHelper.maxBetForChoice(maxBetPerType),
+                notice: this.getNoticeObj(noticeHelper.maxBetForChoice, { maxBet: maxBetPerType }),
             },
             {
                 failure: amount < minBet,
-                notice: noticeHelper.minBet(minBet),
+                notice: this.getNoticeObj(noticeHelper.minBet, { minBet }),
             },
             {
                 failure: currentTotalAmount + amount > maxBet,
-                notice: noticeHelper.maxBet(maxBet),
+                notice: this.getNoticeObj(noticeHelper.maxBet, { maxBet }),
             },
         ];
     }
@@ -116,18 +96,18 @@ export default class LotteryPlaceBetConsumer extends Core.BaseEventConsumers.Pla
                         betChoiceKeys.length < 1 ||
                         betChoiceKeys.length > constants.maxChoices[betType] ||
                         !this.betChoiceValidateor[betType](betChoiceKeys),
-                    notice: noticeHelper.invalidBet,
+                    notice: this.getNoticeObj(noticeHelper.invalidBet),
                 });
             } else {
                 criterons.push({
                     failure: true,
-                    notice: noticeHelper.invalidBet,
+                    notice: this.getNoticeObj(noticeHelper.invalidBet),
                 });
             }
         } else {
             criterons.push({
                 failure: true,
-                notice: noticeHelper.invalidBet,
+                notice: this.getNoticeObj(noticeHelper.invalidBet),
             });
         }
 
@@ -171,6 +151,7 @@ export default class LotteryPlaceBetConsumer extends Core.BaseEventConsumers.Pla
         const { betChoice } = payload;
         payload.amount = 0;
         payload.freeBet = payload.freeBet ?? false;
+        payload.roundId = this.gameData.roundId;
 
         for (const betType of Object.values(betChoice)) {
             for (const choice of Object.keys(betType)) {
