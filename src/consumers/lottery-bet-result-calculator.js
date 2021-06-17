@@ -76,55 +76,7 @@ export default {
             }
         }
     },
-    "parlay2": function (result, betChoices, settlementResult, odds) {
-        result.winningByChoices["parlay2"] = 0;
-
-        for (const [choice, amount] of Object.entries(betChoices)) {
-            const numbers = choice.split("-");
-            if (numbers.every(x => settlementResult["27Sets"].includes(x))) {
-                const winAmount = amount * odds;
-
-                result.totalWin += winAmount;
-                result.winningByChoices["parlay2"] += winAmount;
-                result.netWin += winAmount - amount;
-            } else {
-                result.totalLost += amount;
-            }
-        }
-    },
-    "parlay3": function (result, betChoices, settlementResult, odds) {
-        result.winningByChoices["parlay3"] = 0;
-
-        for (const [choice, amount] of Object.entries(betChoices)) {
-            const numbers = choice.split("-");
-            if (numbers.every(x => settlementResult["27Sets"].includes(x))) {
-                const winAmount = amount * odds;
-
-                result.totalWin += winAmount;
-                result.winningByChoices["parlay3"] += winAmount;
-                result.netWin += winAmount - amount;
-            } else {
-                result.totalLost += amount;
-            }
-        }
-    },
-    "parlay4": function (result, betChoices, settlementResult, odds) {
-        result.winningByChoices["parlay4"] = 0;
-
-        for (const [choice, amount] of Object.entries(betChoices)) {
-            const numbers = choice.split("-");
-            if (numbers.every(x => settlementResult["27Sets"].includes(x))) {
-                const winAmount = amount * odds;
-
-                result.totalWin += winAmount;
-                result.winningByChoices["parlay4"] += winAmount;
-                result.netWin += winAmount - amount;
-            } else {
-                result.totalLost += amount;
-            }
-        }
-    },
-    "others": function (result, betChoices, settlementResult, odds) {
+    others: function (result, betChoices, settlementResult, odds) {
         result.winningByChoices["others"] = 0;
 
         for (const [choice, amount] of Object.entries(betChoices)) {
