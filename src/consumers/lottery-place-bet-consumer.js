@@ -181,7 +181,7 @@ export default class LotteryPlaceBetConsumer extends PlaceBetConsumer {
 
             this.gameData.ingame[name] = newPlayer;
         }
-
+        console.log(this.gameData.ingame);
         this.adjustBetTracks(player.profile.name, payload);
         this.gameData.ingame[name].betQueue.push({ player, payload });
     }

@@ -127,7 +127,7 @@ describe("calculateBetResult test", () => {
                     even: 10,
                 },
             },
-            totalAmount: 20,
+            totalAmount: 30,
             toObject: function () {
                 return this;
             },
@@ -140,5 +140,28 @@ describe("calculateBetResult test", () => {
         expect(actualResult.winningByChoices["others"]).toEqual(10 * gameData.gameConfigs.odds["others"]);
         expect(actualResult.netWin).toEqual(expectedTotalWin - 10);
         expect(actualResult.totalLost).toEqual(10);
+    });
+
+    it.only("27 sets bet test - should calculate win amount and total lost correctly", () => {
+        const generatedResult = lotteryNumberGenerator.generate();
+        const settlementResult = getSettlementResult(generatedResult);
+        const bet = {
+            choices: {
+                "27Sets": {
+                    [settlementResult["27Sets"][0]]: 10,
+                },
+            },
+            totalAmount: 30,
+            toObject: function () {
+                return this;
+            },
+        };
+        const expectedTotalWin = 10 * gameData.gameConfigs.odds["27Sets"] * settlementResult.occurrences.all[settlementResult["27Sets"][0]];
+        var actualResult = settleRoundConsumer.calculateBetResult(settlementResult, bet, gameData.gameConfigs.odds);
+
+        expect(actualResult.totalWin).toEqual(expectedTotalWin);
+        expect(actualResult.winningByChoices["27Sets"]).toEqual(expectedTotalWin);
+        expect(actualResult.netWin).toEqual(expectedTotalWin - 10);
+        expect(actualResult.totalLost).toEqual(0);
     });
 });
