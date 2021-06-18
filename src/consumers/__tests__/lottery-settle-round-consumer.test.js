@@ -142,7 +142,7 @@ describe("calculateBetResult test", () => {
         expect(actualResult.totalLost).toEqual(10);
     });
 
-    it.only("27 sets bet test - should calculate win amount and total lost correctly", () => {
+    it("27 sets bet test - should calculate win amount and total lost correctly", () => {
         const generatedResult = lotteryNumberGenerator.generate();
         const settlementResult = getSettlementResult(generatedResult);
         const bet = {
