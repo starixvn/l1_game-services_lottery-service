@@ -114,8 +114,8 @@ export default class LotteryPlaceBetConsumer extends PlaceBetConsumer {
         return criterons;
     }
 
-    composeValidationCriteria(player, betChoice, amount, freeBet) {
-        const bettingTimeValidationCriteria = this.composeBettingTimeValidationCriteria();
+    composeValidationCriteria(player, betChoice, amount, freeBet, roundId) {
+        const bettingTimeValidationCriteria = this.composeBettingTimeValidationCriteria(roundId);
 
         const betChoiceValidationCriteria = this.composeBetChoiceValidationCriteria(betChoice);
 
@@ -151,7 +151,8 @@ export default class LotteryPlaceBetConsumer extends PlaceBetConsumer {
         const { betChoice } = payload;
         payload.amount = 0;
         payload.freeBet = payload.freeBet ?? false;
-        payload.roundId = this.gameData.roundId;
+        payload.roundId = payload.roundId ?? this.gameData.roundId;
+        payload.receivedTime = new Date();
 
         for (const betType of Object.values(betChoice)) {
             for (const choice of Object.keys(betType)) {
@@ -164,10 +165,10 @@ export default class LotteryPlaceBetConsumer extends PlaceBetConsumer {
     consume(player, payload) {
         this.adjustPayload(payload);
 
-        const { amount, betChoice, freeBet } = payload;
+        const { amount, betChoice, freeBet, roundId } = payload;
         const name = player.profile.name;
 
-        if (!this.validateBetRequest(player, betChoice, amount, freeBet)) {
+        if (!this.validateBetRequest(player, betChoice, amount, freeBet, roundId)) {
             return;
         }
 
