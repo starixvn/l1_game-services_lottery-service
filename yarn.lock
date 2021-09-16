@@ -6502,6 +6502,8 @@
   "version" "4.0.3"
 
 "lodash._getnative@^3.0.0":
+  "integrity" "sha1-VwvH3t5G1hzc3mh9ZdPuy6o6r/U="
+  "resolved" "http://npm.lumigame.com/lodash._getnative/-/lodash._getnative-3.9.1.tgz"
   "version" "3.9.1"
 
 "lodash._root@~3.0.0":
@@ -9032,10 +9034,10 @@
     "mongoose-long" "^0.3.0"
     "numeral" "^2.0.6"
 
-"sc-game-base@~1.23.0":
-  "integrity" "sha512-q/OWwYjCKN9x065KdVgRKAEiFixG/gVVHgLAfckDIcfbHVqt+a5aJ1k3ktCIQXkz28wdjUw/CTW7uUoEL/jt3g=="
-  "resolved" "http://npm.lumigame.com/sc-game-base/-/sc-game-base-1.23.0.tgz"
-  "version" "1.23.0"
+"sc-game-base@~1.24.1":
+  "integrity" "sha512-pp/05aTxBpn66LL2mGRy7nokaDhKCIAXFoAt6AvHSTLd91kfiM4Laz2Ovd3/SZLgKLD0tpIQjzTQ9oBwMeDMZg=="
+  "resolved" "http://npm.lumigame.com/sc-game-base/-/sc-game-base-1.24.1.tgz"
+  "version" "1.24.1"
   dependencies:
     "awilix" "^4.3.1"
     "axios" "^0.20.0"
