@@ -6,24 +6,33 @@ import LotteryPlaceBetConsumer from "../lottery-place-bet-consumer";
 
 jest.mock("sc-game-base/src/core/event-publishers/base-event-publisher");
 
-const gameData = new GameData(10);
-gameData.gameConfigs = {
-    minbet: 1,
-    maxbet: 2000,
-    choices_maxbet: {
-        "4Sets": 200,
-        special: 100,
-        head: 500,
-        tail: 500,
-        "27Sets": 2000,
-        parlay2: 200,
-        parlay3: 100,
-        parlay4: 100,
-        others: 2000,
-    },
+let gameData = null;
+let definition = null;
+
+const initPlaceBetConsumer = () => {
+    return new LotteryPlaceBetConsumer(definition, gameData, new BaseEventPublisher());
 };
-const definition = new LotteryGameDefinition(gameSettings);
-const placeBetConsumer = new LotteryPlaceBetConsumer(definition, gameData, new BaseEventPublisher());
+
+beforeEach(() => {
+    gameData = new GameData(gameSettings.durations.wholeRound);
+    gameData.gameConfigs = {
+        enabled: true,
+        minbet: 1,
+        maxbet: 2000,
+        choices_maxbet: {
+            "4Sets": 200,
+            special: 100,
+            head: 500,
+            tail: 500,
+            "27Sets": 2000,
+            parlay2: 200,
+            parlay3: 100,
+            parlay4: 100,
+            others: 2000,
+        },
+    };
+    definition = new LotteryGameDefinition(gameSettings);
+});
 
 describe("adjustPayload test", () => {
     it("should convert all float numbers to integer", () => {
@@ -36,6 +45,8 @@ describe("adjustPayload test", () => {
             },
         };
 
+        const placeBetConsumer = initPlaceBetConsumer();
+
         placeBetConsumer.adjustPayload(payload);
         expect(payload.betChoice["4Sets"][10]).toEqual(1);
         expect(payload.freeBet).toBeFalse();
@@ -43,33 +54,23 @@ describe("adjustPayload test", () => {
 });
 
 describe("adjustBetTracks test", () => {
-    it("should add all bet choice amount to betTracks ", () => {
-        const playerName = "player01";
-        const payload = {
-            betChoice: {
-                "4Sets": {
-                    10: 1,
-                    20: 1,
-                },
-            },
-        };
+    const testCases = [
+        [{}, { betChoice: { special: { 20: 10 } } }, { special: { 20: 10 }, totalAmount: 10 }],
+        [
+            { special: { 20: 10 }, "4Sets": { 10: 20 }, totalAmount: 30 },
+            { betChoice: { special: { 10: 10 } } },
+            { special: { 20: 10, 10: 10 }, "4Sets": { 10: 20 }, totalAmount: 40 },
+        ],
+    ];
 
-        gameData.ingame = {
-            [playerName]: {
-                betTracks: {
-                    "4Sets": {
-                        10: 1,
-                    },
-                    totalAmount: 1,
-                },
-            },
+    it.each(testCases)("should update betTracks correctly", (betTracks, bet, expectedBetTracks) => {
+        gameData.ingame.player = {
+            betTracks,
         };
-        placeBetConsumer.adjustBetTracks(playerName, payload);
+        const consumer = initPlaceBetConsumer();
 
-        const { betTracks } = gameData.ingame[playerName];
-        expect(betTracks["4Sets"][10]).toEqual(2);
-        expect(betTracks["4Sets"][20]).toEqual(1);
-        expect(betTracks.totalAmount).toEqual(3);
+        consumer.adjustBetTracks("player", bet);
+        expect(betTracks).toEqual(expectedBetTracks);
     });
 });
 
@@ -84,6 +85,7 @@ describe("composeBetChoiceValidationCriteria test", () => {
             },
         };
 
+        const placeBetConsumer = initPlaceBetConsumer();
         var actualResult = placeBetConsumer.composeBetChoiceValidationCriteria(payload.betChoice);
         expect(actualResult.some((x) => x.failure)).toBeTrue(1);
     });
@@ -99,6 +101,7 @@ describe("composeBetChoiceValidationCriteria test", () => {
                 },
             },
         };
+        const placeBetConsumer = initPlaceBetConsumer();
 
         var actualResult = placeBetConsumer.composeBetChoiceValidationCriteria(payload.betChoice);
         expect(actualResult.some((x) => x.failure)).toBeTrue();
@@ -113,6 +116,7 @@ describe("composeBetChoiceValidationCriteria test", () => {
             },
         };
 
+        const placeBetConsumer = initPlaceBetConsumer();
         var actualResult = placeBetConsumer.composeBetChoiceValidationCriteria(payload.betChoice);
         expect(actualResult.every((x) => !x.failure)).toBeTrue();
     });
@@ -136,6 +140,7 @@ describe("composeBetAmountValidationCriteria test", () => {
             },
         };
 
+        const placeBetConsumer = initPlaceBetConsumer();
         var actualResult = placeBetConsumer.composeBetAmountValidationCriteria(realPlayer, payload.betChoice, -1, false);
         expect(actualResult.some((x) => x.failure)).toBeTrue();
     });
@@ -161,6 +166,7 @@ describe("composeBetAmountValidationCriteria test", () => {
             },
         };
 
+        const placeBetConsumer = initPlaceBetConsumer();
         var actualResult = placeBetConsumer.composeBetAmountValidationCriteria(realPlayer, payload.betChoice, 100, false);
         expect(actualResult.some((x) => x.failure)).toBeTrue();
     });
@@ -186,7 +192,49 @@ describe("composeBetAmountValidationCriteria test", () => {
             },
         };
 
+        const placeBetConsumer = initPlaceBetConsumer();
         var actualResult = placeBetConsumer.composeBetAmountValidationCriteria(realPlayer, payload.betChoice, 2000, false);
         expect(actualResult.some((x) => x.failure)).toBeTrue();
+    });
+});
+
+describe("consume tests", () => {
+    const player = {
+        profile: {
+            name: "player",
+            minBet: 1,
+            maxBet: 2000,
+        },
+        session: {},
+    };
+    it("validateBetRequest return true, should push bet to queue", () => {
+        const payload = {
+            betChoice: {
+                special: {
+                    10: 100,
+                },
+            },
+        };
+
+        const consumer = initPlaceBetConsumer();
+        gameData.remainingTime = definition.durations.placingBets - 1;
+
+        consumer.consume(player, payload);
+        expect(gameData.ingame["player"].betQueue).not.toBeEmpty();
+    });
+
+    it("validateBetRequest return false, should return", () => {
+        const payload = {
+            betChoice: {
+                special: {
+                    10: -1,
+                },
+            },
+        };
+
+        const consumer = initPlaceBetConsumer();
+
+        consumer.consume(player, payload);
+        expect(gameData.ingame["player"]).toBeUndefined();
     });
 });
