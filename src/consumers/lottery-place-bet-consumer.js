@@ -31,11 +31,11 @@ export default class LotteryPlaceBetConsumer extends PlaceBetConsumer {
     }
 
     hasChoiceExceedMaxBet(player, betTracks, bet) {
-        const configs = this.gameData.gameConfigs;
+        const settings = this.gameData.currencyGroupGames.find((x) => x.groupId.toString() === player.session.currencyGroupId);
 
         const betTypeKey = Object.keys(bet)[0];
         const betType = bet[betTypeKey];
-        const maxBetPerType = Math.min(player.profile.maxBet, configs.choices_maxbet[betTypeKey]);
+        const maxBetPerType = Math.min(player.profile.maxBet, settings.maxBetPerChoices[betTypeKey]);
 
         return Object.entries(betType).some(([betChoice, amountOnChoice]) => {
             const currentBetAmount = betTracks[betTypeKey]?.[betChoice] ?? 0;
@@ -44,6 +44,7 @@ export default class LotteryPlaceBetConsumer extends PlaceBetConsumer {
     }
 
     composeBetAmountValidationCriteria(player, bet, amount, freeBet) {
+        const settings = this.gameData.currencyGroupGames.find((x) => x.groupId.toString() === player.session.currencyGroupId);
         const configs = this.gameData.gameConfigs;
         const betTypeKey = Object.keys(bet)[0];
         const betType = bet[betTypeKey];
@@ -54,9 +55,9 @@ export default class LotteryPlaceBetConsumer extends PlaceBetConsumer {
 
         const currentTotalAmount = betTracks.totalAmount || 0;
 
-        const minBet = Math.max(player.profile.minBet, configs.minbet);
-        const maxBet = Math.min(player.profile.maxBet, configs.maxbet);
-        const maxBetPerType = Math.min(player.profile.maxBet, configs.choices_maxbet[betTypeKey]);
+        const minBet = Math.max(player.profile.minBet, settings.minbet);
+        const maxBet = Math.min(player.profile.maxBet, settings.maxbet);
+        const maxBetPerType = Math.min(player.profile.maxBet, settings.maxBetPerChoices[betTypeKey]);
 
         return [
             {

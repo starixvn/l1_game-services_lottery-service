@@ -17,20 +17,25 @@ beforeEach(() => {
     gameData = new GameData(gameSettings.durations.wholeRound);
     gameData.gameConfigs = {
         enabled: true,
-        minbet: 1,
-        maxbet: 2000,
-        choices_maxbet: {
-            "4Sets": 200,
-            special: 100,
-            head: 500,
-            tail: 500,
-            "27Sets": 2000,
-            parlay2: 200,
-            parlay3: 100,
-            parlay4: 100,
-            others: 2000,
-        },
     };
+    gameData.currencyGroupGames = [
+        {
+            groupId: "g1",
+            minbet: 1,
+            maxbet: 2000,
+            maxBetPerChoices: {
+                "4Sets": 200,
+                special: 100,
+                head: 500,
+                tail: 500,
+                "27Sets": 2000,
+                parlay2: 200,
+                parlay3: 100,
+                parlay4: 100,
+                others: 2000,
+            },
+        },
+    ];
     definition = new LotteryGameDefinition(gameSettings);
 });
 
@@ -129,6 +134,9 @@ describe("composeBetAmountValidationCriteria test", () => {
             maxBet: 3000,
             name: "player01",
         },
+        session: {
+            currencyGroupId: "g1",
+        }
     };
 
     it("bet has negative amount - return criteron with failure = true", () => {
@@ -205,7 +213,9 @@ describe("consume tests", () => {
             minBet: 1,
             maxBet: 2000,
         },
-        session: {},
+        session: {
+            currencyGroupId: "g1",
+        }
     };
     it("validateBetRequest return true, should push bet to queue", () => {
         const payload = {

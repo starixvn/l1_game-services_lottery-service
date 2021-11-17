@@ -14,6 +14,9 @@ export default class LotteryGameCron extends BaseGameCron {
         archiveStatusesRepository,
         notificationRepository,
         statisticConsumer,
+        exchangeRatesRepository,
+        currencyGroupGamesRepository,
+        partnerConfigRepository,
     }) {
         super({
             definition,
@@ -27,6 +30,9 @@ export default class LotteryGameCron extends BaseGameCron {
             roundsRepository,
             archiveStatusesRepository,
             notificationRepository,
+            exchangeRatesRepository,
+            currencyGroupGamesRepository,
+            partnerConfigRepository,
         });
 
         this.statisticConsumer = statisticConsumer;
