@@ -7,6 +7,7 @@ export default class LotteryProcessBetQueue extends ProcessBetQueue {
             gameId: this.definition.id,
             gameRoundId: payload.roundId,
             freeBet: payload.freeBet,
+            clientSentTime: payload.time ?? new Date(),
         };
     }
 

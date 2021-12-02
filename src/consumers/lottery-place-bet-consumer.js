@@ -55,8 +55,8 @@ export default class LotteryPlaceBetConsumer extends PlaceBetConsumer {
 
         const currentTotalAmount = betTracks.totalAmount || 0;
 
-        const minBet = Math.max(player.profile.minBet, settings.minbet);
-        const maxBet = Math.min(player.profile.maxBet, settings.maxbet);
+        const minBet = Math.max(player.profile.minBet, settings.minBet);
+        const maxBet = Math.min(player.profile.maxBet, settings.maxBet);
         const maxBetPerType = Math.min(player.profile.maxBet, settings.maxBetPerChoices[betTypeKey]);
 
         return [

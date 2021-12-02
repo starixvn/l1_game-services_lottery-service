@@ -21,8 +21,8 @@ beforeEach(() => {
     gameData.currencyGroupGames = [
         {
             groupId: "g1",
-            minbet: 1,
-            maxbet: 2000,
+            minBet: 1,
+            maxBet: 2000,
             maxBetPerChoices: {
                 "4Sets": 200,
                 special: 100,

@@ -22,11 +22,13 @@ export default class LotterySettleRoundConsumer extends SettleGameRoundConsumer 
     async settleRound() {
         const generatedResult = this.generateResult();
         const settlementResult = this.definition.settle(generatedResult);
+        const { roundId, exchangeRates } = this.gameData;
         const newRound = await this.roundsRepository.create({
-            id: this.gameData.roundId,
+            id: roundId,
             result: generatedResult.board,
             settlementResult,
             time: new Date(),
+            exchangeRateId: exchangeRates.exId,
         });
 
         if (newRound) {
