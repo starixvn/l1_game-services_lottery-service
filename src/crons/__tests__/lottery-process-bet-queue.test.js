@@ -12,6 +12,11 @@ jest.mock("sc-game-base/src/core/event-publishers");
 
 const definition = new Table.TableGameDefinition(gameSettings);
 const gameData = new Table.TableGameData(gameSettings.durations.placingBets - 1);
+gameData.exchangeRates = {
+    code: {
+        US: 1,
+    },
+};
 const placeBetPublisher = new PlaceBetPublisher(definition.name, gameData);
 
 /** @type {logger}*/
@@ -125,6 +130,8 @@ const mockPlayer = () => {
             userId: 1,
             memberId: 1,
             siteId: "123456",
+            multiplier: 1,
+            currencyCode: "US",
         },
         socketClient: {
             emit: jest.fn(),

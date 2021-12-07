@@ -33,6 +33,9 @@ gameData.gameConfigs = {
         parlay4: 120,
         others: 1.98,
     },
+    exchangeRates: {
+        exId: 1,
+    },
 };
 const definition = new LotteryGameDefinition(gameSettings);
 const settleRoundConsumer = new LotterySettleRoundConsumer({ definition, gameData });
