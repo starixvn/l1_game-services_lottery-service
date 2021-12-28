@@ -11,6 +11,7 @@ export default class LotterySocketRouter extends Core.Routers.BaseSocketRouter {
         userSignInPublisher,
         historyQuery,
         logService,
+        playGamePermissionValidator,
         statisticConsumer,
     }) {
         super({
@@ -22,6 +23,7 @@ export default class LotterySocketRouter extends Core.Routers.BaseSocketRouter {
             userDisconnectConsumer,
             userSignInPublisher,
             historyQuery,
+            playGamePermissionValidator,
             logService,
         });
 

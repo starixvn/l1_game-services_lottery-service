@@ -7,10 +7,11 @@ export default class LotteryProcessBetQueue extends ProcessBetQueue {
             gameId: this.definition.id,
             gameRoundId: payload.roundId,
             freeBet: payload.freeBet,
+            clientSentTime: payload.time ?? new Date(),
         };
     }
 
-    async insertBetLog(player, roundId, bet) {
+    async insertBetLog(player, roundId, bet, rate) {
         const newBetLog = {
             uid: player.UID,
             name: player.profile.name,
@@ -23,12 +24,15 @@ export default class LotteryProcessBetQueue extends ProcessBetQueue {
         if (player.session) {
             newBetLog.memberId = player.session.memberId;
             newBetLog.siteId = player.session.siteId;
+            newBetLog.partnerId = player.session.partnerId;
+            newBetLog.currency = player.session.currencyName;
+            newBetLog.rate = rate;
         }
 
         await this.betLogsRepository.create(newBetLog);
     }
 
-    async upsertBet(player, roundId, bet) {
+    async upsertBet(player, roundId, bet, rate) {
         const configs = this.gameData.gameConfigs;
         const newBet = {
             uid: player.UID,
@@ -47,6 +51,9 @@ export default class LotteryProcessBetQueue extends ProcessBetQueue {
         if (player.session) {
             newBet.memberId = player.session.memberId;
             newBet.siteId = player.session.siteId;
+            newBet.partnerId = player.session.partnerId;
+            newBet.currency = player.session.currencyName;
+            newBet.rate = rate;
         }
 
         await this.betsRepository.updateOne(
@@ -81,27 +88,28 @@ export default class LotteryProcessBetQueue extends ProcessBetQueue {
         }
     }
 
-    adjustTotalBets(player, bet) {
+    adjustTotalBets(player, bet, rate) {
         const { betChoice, amount } = bet;
         const betType = Object.keys(betChoice)[0];
-        this.gameData.totalBets[betType] = (this.gameData.totalBets[betType] ?? 0) + amount;
+        this.gameData.totalBets[betType] = (this.gameData.totalBets[betType] ?? 0) + amount * rate;
     }
 
-    generatePlacingBetResult(player, balance, bet) {
+    generatePlacingBetResult(player, balance, bet, rate) {
         const { betChoice, amount } = bet;
         const ownBet = super.generatePlacingBetResult(player, balance, bet);
 
         ownBet.ownChip = { betChoice, amount };
 
         if (this.gameData.chips) {
+            this.gameData.chips[rate] = this.gameData.chips[rate] ?? {};
             const betTypeKey = Object.keys(betChoice)[0];
             for (const [betChoiceKey, amountOnChoice] of Object.entries(betChoice[betTypeKey])) {
-                if (!this.gameData.chips[betTypeKey]) {
-                    this.gameData.chips[betTypeKey] = {};
+                if (!this.gameData.chips[rate][betTypeKey]) {
+                    this.gameData.chips[rate][betTypeKey] = {};
                 }
-                this.gameData.chips[betTypeKey][betChoiceKey] = this.gameData.chips[betTypeKey][betChoiceKey] ?? {};
-                this.gameData.chips[betTypeKey][betChoiceKey][amountOnChoice] =
-                    (this.gameData.chips[betTypeKey][betChoiceKey][amountOnChoice] ?? 0) + 1;
+                this.gameData.chips[rate][betTypeKey][betChoiceKey] = this.gameData.chips[rate][betTypeKey][betChoiceKey] ?? {};
+                this.gameData.chips[rate][betTypeKey][betChoiceKey][amountOnChoice] =
+                    (this.gameData.chips[rate][betTypeKey][betChoiceKey][amountOnChoice] ?? 0) + 1;
             }
         }
 
