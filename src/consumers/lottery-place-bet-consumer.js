@@ -4,7 +4,7 @@ import { PlaceBetConsumer } from "sc-game-base/src/core/event-consumers";
 import constants from "../constants";
 
 export default class LotteryPlaceBetConsumer extends PlaceBetConsumer {
-    betChoiceValidateor = {
+    betChoiceValidator = {
         "4Sets": function (betChoiceKeys) {
             return betChoiceKeys.every((choice) => !isNaN(choice) && choice.length === 2);
         },
@@ -96,7 +96,7 @@ export default class LotteryPlaceBetConsumer extends PlaceBetConsumer {
                     failure:
                         betChoiceKeys.length < 1 ||
                         betChoiceKeys.length > constants.maxChoices[betType] ||
-                        !this.betChoiceValidateor[betType](betChoiceKeys),
+                        !this.betChoiceValidator[betType](betChoiceKeys),
                     notice: this.getNoticeObj(noticeHelper.invalidBet),
                 });
             } else {
@@ -125,8 +125,30 @@ export default class LotteryPlaceBetConsumer extends PlaceBetConsumer {
         }
 
         const betAmountValidationCriteria = this.composeBetAmountValidationCriteria(player, betChoice, amount, freeBet);
+        const hedgeBetValidationCriteria = this.composeHedgeBetValidationCriteria(betChoice, player);
 
-        return bettingTimeValidationCriteria.concat(betAmountValidationCriteria, betChoiceValidationCriteria);
+        return bettingTimeValidationCriteria.concat(betAmountValidationCriteria, betChoiceValidationCriteria, hedgeBetValidationCriteria);
+    }
+
+    composeHedgeBetValidationCriteria(betChoice, player) {
+        const betTypeKey = Object.keys(betChoice)[0];
+        let hedgeBetGroup = null;
+
+        if (betTypeKey === "others") {
+            const betKey = Object.keys(betChoice[betTypeKey])[0];
+            const { betTracks } = this.gameData.ingame[player.profile.name] || { betTracks: {} };
+            const currentOtherBets = betTracks.others || {};
+            const otherBetCollection = [...Object.keys(currentOtherBets), betKey];
+
+            hedgeBetGroup = this.definition.hedgeBetGroups.find((group) => group.every((key) => otherBetCollection.includes(key)));
+        }
+
+        return [
+            {
+                failure: !!hedgeBetGroup,
+                notice: this.getNoticeObj(noticeHelper.disallowHedgeBet, { hedgeBetGroup }),
+            },
+        ];
     }
 
     adjustBetTracks(playerName, bet) {

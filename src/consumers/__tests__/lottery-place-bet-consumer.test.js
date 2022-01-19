@@ -136,7 +136,7 @@ describe("composeBetAmountValidationCriteria test", () => {
         },
         session: {
             currencyGroupId: "g1",
-        }
+        },
     };
 
     it("bet has negative amount - return criteron with failure = true", () => {
@@ -206,6 +206,57 @@ describe("composeBetAmountValidationCriteria test", () => {
     });
 });
 
+describe("composeHedgeBetValidationCriteria test", () => {
+    const player = {
+        profile: {
+            name: "player01",
+        },
+    };
+    const payload = {
+        betChoice: {
+            others: {
+                even: 1000,
+            },
+        },
+    };
+
+    it("valid bet choice, return criteron with no failure", () => {
+        gameData.ingame = {
+            player01: {
+                betTracks: {
+                    others: {
+                        even: 50,
+                        big: 50,
+                    },
+                    totalAmount: 100,
+                },
+            },
+        };
+
+        const placeBetConsumer = initPlaceBetConsumer();
+        var actualResult = placeBetConsumer.composeHedgeBetValidationCriteria(payload.betChoice, player);
+        expect(actualResult.every((x) => !x.failure)).toBeTrue();
+    });
+
+    it("invalid bet choice, return criteron with failure", () => {
+        gameData.ingame = {
+            player01: {
+                betTracks: {
+                    others: {
+                        odd: 50,
+                        big: 50,
+                    },
+                    totalAmount: 100,
+                },
+            },
+        };
+
+        const placeBetConsumer = initPlaceBetConsumer();
+        var actualResult = placeBetConsumer.composeHedgeBetValidationCriteria(payload.betChoice, player);
+        expect(actualResult.some((x) => x.failure)).toBeTrue();
+    });
+});
+
 describe("consume tests", () => {
     const player = {
         profile: {
@@ -215,7 +266,7 @@ describe("consume tests", () => {
         },
         session: {
             currencyGroupId: "g1",
-        }
+        },
     };
     it("validateBetRequest return true, should push bet to queue", () => {
         const payload = {
