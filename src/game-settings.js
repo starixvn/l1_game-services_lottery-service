@@ -13,6 +13,6 @@ export default {
     totalOthersOfStats: 20,
     hedgeBetGroups: [
         ["big", "small"],
-        ["odd", "even"],
+        ["even", "odd"],
     ],
 };
