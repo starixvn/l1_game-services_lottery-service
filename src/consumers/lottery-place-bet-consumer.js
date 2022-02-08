@@ -138,7 +138,8 @@ export default class LotteryPlaceBetConsumer extends PlaceBetConsumer {
             const betKey = Object.keys(betChoice[betTypeKey])[0];
             const { betTracks } = this.gameData.ingame[player.profile.name] || { betTracks: {} };
             const currentOtherBets = betTracks.others || {};
-            const otherBetCollection = [...Object.keys(currentOtherBets), betKey];
+            const currentOtherValidBetKeys = Object.keys(currentOtherBets).filter((key) => currentOtherBets[key] > 0);
+            const otherBetCollection = [...currentOtherValidBetKeys, betKey];
 
             hedgeBetGroup = this.definition.hedgeBetGroups.find((group) => group.every((key) => otherBetCollection.includes(key)));
         }
