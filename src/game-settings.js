@@ -11,4 +11,8 @@ export default {
     defaultBetTracks: {},
     totalRoundsOfStats: 100,
     totalOthersOfStats: 20,
+    hedgeBetGroups: [
+        ["big", "small"],
+        ["even", "odd"],
+    ],
 };
