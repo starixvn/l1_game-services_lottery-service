@@ -19,6 +19,7 @@ export default class LotteryProcessBetQueue extends ProcessBetQueue {
             time: new Date(),
             choices: bet.betChoice,
             freeBet: bet.freeBet,
+            roundId,
         };
 
         if (player.session) {
@@ -43,6 +44,7 @@ export default class LotteryProcessBetQueue extends ProcessBetQueue {
             time: new Date(),
             odds: configs.odds,
             freeBet: bet.freeBet,
+            roundId,
         };
         const existingBetFilter = { uid: player.UID, phien: roundId };
         const existingBetIncrement = {
