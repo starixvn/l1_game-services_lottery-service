@@ -35,6 +35,11 @@ const schema = new mongoose.Schema({
     currency: { type: String, require: true },
     rate: { type: Number, require: true },
     partnerId: { type: String, require: true },
+
+    playerId: { type: Number },
+    operatorId: { type: String, required: false },
+    roundId: { type: Number, required: true },
+    paid: { type: Boolean, default: false },
 });
 
 const betLogsSchema = new mongoose.Schema({
@@ -52,6 +57,10 @@ const betLogsSchema = new mongoose.Schema({
     currency: { type: String, require: true },
     rate: { type: Number, require: true },
     partnerId: { type: String, require: true },
+
+    playerId: { type: Number },
+    operatorId: { type: String, required: false },
+    roundId: { type: Number, required: true },
 });
 
 const LotteryBetLogs = mongoose.model("lottery_cuoc", betLogsSchema);
