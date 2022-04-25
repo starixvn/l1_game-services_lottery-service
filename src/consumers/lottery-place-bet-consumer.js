@@ -202,6 +202,8 @@ export default class LotteryPlaceBetConsumer extends PlaceBetConsumer {
                 currency: player.session.currencyName,
                 betTracks: {},
                 betQueue: [],
+                system: player.session.system,
+                partnerId: player.session.partnerId,
                 operatorId: player.session.partnerId,
             };
 
