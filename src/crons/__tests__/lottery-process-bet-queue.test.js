@@ -108,6 +108,27 @@ describe("successful bet tests", () => {
     });
 });
 
+describe("adjustOwnBets test", () => {
+    const testCases = [
+        [{}, { betChoice: { special: { 20: 10 } } }, { special: { 20: 10 }, totalAmount: 10 }],
+        [
+            { special: { 20: 10 }, "4Sets": { 10: 20 }, totalAmount: 30 },
+            { betChoice: { special: { 10: 10 } } },
+            { special: { 20: 10, 10: 10 }, "4Sets": { 10: 20 }, totalAmount: 40 },
+        ],
+    ];
+
+    it.each(testCases)("should update ownBets correctly", (ownBets, bet, expectedOwnBets) => {
+        gameData.ingame.player = {
+            ownBets,
+        };
+        const proceedBetQueue = initBetQueue();
+
+        proceedBetQueue.adjustOwnBets("player", bet);
+        expect(ownBets).toEqual(expectedOwnBets);
+    });
+});
+
 const initBetQueue = () => {
     return new ProcessBetQueue({
         definition,

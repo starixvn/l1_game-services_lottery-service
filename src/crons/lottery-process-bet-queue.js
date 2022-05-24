@@ -88,6 +88,24 @@ export default class LotteryProcessBetQueue extends ProcessBetQueue {
         }
     }
 
+    adjustOwnBets(playerName, bet) {
+        const { betChoice } = bet;
+        const betTypeKey = Object.keys(betChoice)[0];
+
+        if (this.gameData.ingame?.[playerName]) {
+            const playerInGame = this.gameData.ingame[playerName];
+
+            playerInGame.ownBets = playerInGame.ownBets || {};
+            playerInGame.ownBets[betTypeKey] = playerInGame.ownBets[betTypeKey] || {};
+
+            for (const [choice, amountOnChoice] of Object.entries(betChoice[betTypeKey])) {
+                playerInGame.ownBets[betTypeKey][choice] = (playerInGame.ownBets[betTypeKey][choice] || 0) + amountOnChoice;
+
+                playerInGame.ownBets.totalAmount = (playerInGame.ownBets.totalAmount || 0) + amountOnChoice;
+            }
+        }
+    }
+
     adjustTotalBets(player, bet, rate) {
         const { betChoice, amount } = bet;
         const betType = Object.keys(betChoice)[0];
