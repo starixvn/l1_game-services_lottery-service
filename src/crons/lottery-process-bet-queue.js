@@ -19,6 +19,7 @@ export default class LotteryProcessBetQueue extends ProcessBetQueue {
             time: new Date(),
             choices: bet.betChoice,
             freeBet: bet.freeBet,
+            roundId,
         };
 
         if (player.session) {
@@ -27,6 +28,8 @@ export default class LotteryProcessBetQueue extends ProcessBetQueue {
             newBetLog.partnerId = player.session.partnerId;
             newBetLog.currency = player.session.currencyName;
             newBetLog.rate = rate;
+            newBetLog.operatorId = player.session.partnerId;
+            newBetLog.playerId = player.session.memberId;
         }
 
         await this.betLogsRepository.create(newBetLog);
@@ -41,6 +44,7 @@ export default class LotteryProcessBetQueue extends ProcessBetQueue {
             time: new Date(),
             odds: configs.odds,
             freeBet: bet.freeBet,
+            roundId,
         };
         const existingBetFilter = { uid: player.UID, phien: roundId };
         const existingBetIncrement = {
@@ -54,6 +58,8 @@ export default class LotteryProcessBetQueue extends ProcessBetQueue {
             newBet.partnerId = player.session.partnerId;
             newBet.currency = player.session.currencyName;
             newBet.rate = rate;
+            newBet.operatorId = player.session.partnerId;
+            newBet.playerId = player.session.memberId;
         }
 
         await this.betsRepository.updateOne(
@@ -84,6 +90,24 @@ export default class LotteryProcessBetQueue extends ProcessBetQueue {
             for (const [choice, amountOnChoice] of Object.entries(betChoice[betTypeKey])) {
                 betTracks[betTypeKey][choice] -= amountOnChoice;
                 betTracks.totalAmount -= amountOnChoice;
+            }
+        }
+    }
+
+    adjustOwnBets(playerName, bet) {
+        const { betChoice } = bet;
+        const betTypeKey = Object.keys(betChoice)[0];
+
+        if (this.gameData.ingame?.[playerName]) {
+            const playerInGame = this.gameData.ingame[playerName];
+
+            playerInGame.ownBets = playerInGame.ownBets || {};
+            playerInGame.ownBets[betTypeKey] = playerInGame.ownBets[betTypeKey] || {};
+
+            for (const [choice, amountOnChoice] of Object.entries(betChoice[betTypeKey])) {
+                playerInGame.ownBets[betTypeKey][choice] = (playerInGame.ownBets[betTypeKey][choice] || 0) + amountOnChoice;
+
+                playerInGame.ownBets.totalAmount = (playerInGame.ownBets.totalAmount || 0) + amountOnChoice;
             }
         }
     }

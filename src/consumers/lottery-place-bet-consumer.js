@@ -73,7 +73,7 @@ export default class LotteryPlaceBetConsumer extends PlaceBetConsumer {
                 notice: this.getNoticeObj(noticeHelper.maxBetForChoice, { maxBet: maxBetPerType }),
             },
             {
-                failure: amount < minBet,
+                failure: amount < minBet || Object.values(betType).some((amountOnChoice) => amountOnChoice < minBet),
                 notice: this.getNoticeObj(noticeHelper.minBet, { minBet }),
             },
             {
@@ -200,10 +200,11 @@ export default class LotteryPlaceBetConsumer extends PlaceBetConsumer {
             const newPlayer = {
                 name: player.profile.name,
                 currency: player.session.currencyName,
-                system: player.session.system,
-                partnerId: player.session.partnerId,
                 betTracks: {},
                 betQueue: [],
+                system: player.session.system,
+                partnerId: player.session.partnerId,
+                operatorId: player.session.partnerId,
             };
 
             this.gameData.ingame[name] = newPlayer;
