@@ -39,7 +39,7 @@ gameData.gameConfigs = {
 };
 const definition = new LotteryGameDefinition(gameSettings);
 const settleRoundConsumer = new LotterySettleRoundConsumer({ definition, gameData });
-const lotteryNumberGenerator = new LotteryNumberGenerator(generatorDefinition, RandomHelper);
+const lotteryNumberGenerator = new LotteryNumberGenerator(generatorDefinition, RandomHelper, gameData);
 
 describe("calculateBetResult test", () => {
     it("4Sets bet test - should calculate win amount and total lost correctly", () => {
