@@ -11,7 +11,7 @@ describe("updateStats test", () => {
         const stats = statistic.addNewRound(settlementResult);
 
         // assert
-        expect(stats.head).toBeArray();
+        expect(stats.head).toBeObject();
     });
 
     it("should handle multiple settlement result normally", () => {
@@ -22,7 +22,7 @@ describe("updateStats test", () => {
         const stats = statistic.addNewRound(data.result2);
 
         // assert
-        expect(stats.head).toBeArray();
+        expect(stats.head).toBeObject();
     });
 
     it("should return 10 hot numbers", () => {
@@ -76,20 +76,20 @@ describe("updateStats test", () => {
 
         // assert
         expect(
-            stats.head.reduce((total, current) => {
-                return total + current;
+            Object.keys(stats.head).reduce((total, current) => {
+                return total + stats.head[current];
             }, 0)
         ).toBe(31);
 
         expect(
-            stats.tail.reduce((total, current) => {
-                return total + current;
+            Object.keys(stats.tail).reduce((total, current) => {
+                return total + stats.tail[current];
             }, 0)
         ).toBe(31);
 
         expect(
-            stats.special.reduce((total, current) => {
-                return total + current;
+            Object.keys(stats.special).reduce((total, current) => {
+                return total + stats.special[current];
             }, 0)
         ).toBe(31);
     });
@@ -106,8 +106,8 @@ describe("updateStats test", () => {
 
         // assert
         expect(
-            stats.special.reduce((total, current) => {
-                return total + current;
+            Object.keys(stats.special).reduce((total, current) => {
+                return total + stats.special[current];
             }, 0)
         ).toBe(2);
     });

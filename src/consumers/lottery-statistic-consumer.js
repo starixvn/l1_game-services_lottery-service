@@ -30,9 +30,9 @@ export default class LotteryStatisticConsumer {
         }
 
         if (this.specialNumbers[settlementResult.special]) {
-            this.specialNumbers[settlementResult.special] += 1; // NOSONAR
+            this.specialNumbers[settlementResult.special] += 1;
         } else {
-            this.specialNumbers[settlementResult.special] = 1; // NOSONAR
+            this.specialNumbers[settlementResult.special] = 1;
         }
 
         this.updateStats(settlementResult, lastResult, isRemoved);
@@ -48,35 +48,35 @@ export default class LotteryStatisticConsumer {
             const lastCount = isRemoved && lastStats.twoDigitsNumbers[twoDigits] ? lastStats.twoDigitsNumbers[twoDigits] : 0;
             const count = firstStats.twoDigitsNumbers[twoDigits] - lastCount;
 
-            this.stats.twoDigitsNumbers[twoDigits] += count; // NOSONAR
+            this.stats.twoDigitsNumbers[twoDigits] += count;
         });
 
         Object.keys(firstStats.seventh).forEach((twoDigits) => {
             const lastCount = isRemoved && lastStats.seventh[twoDigits] ? lastStats.seventh[twoDigits] : 0;
             const count = firstStats.seventh[twoDigits] - lastCount;
 
-            this.stats.seventh[twoDigits] += count; // NOSONAR
+            this.stats.seventh[twoDigits] += count;
         });
 
         Object.keys(firstStats.special).forEach((twoDigits) => {
             const lastCount = isRemoved && lastStats.special[twoDigits] ? lastStats.special[twoDigits] : 0;
             const count = firstStats.special[twoDigits] - lastCount;
 
-            this.stats.special[twoDigits] += count; // NOSONAR
+            this.stats.special[twoDigits] += count;
         });
 
         Object.keys(firstStats.head).forEach((headNumber) => {
             const lastCount = isRemoved ? lastStats.head[headNumber] : 0;
             const count = firstStats.head[headNumber] - lastCount;
 
-            this.stats.head[headNumber] += count; // NOSONAR
+            this.stats.head[headNumber] += count;
         });
 
         Object.keys(firstStats.tail).forEach((tailNumber) => {
             const lastCount = isRemoved ? lastStats.tail[tailNumber] : 0;
             const count = firstStats.tail[tailNumber] - lastCount;
 
-            this.stats.tail[tailNumber] += count; // NOSONAR
+            this.stats.tail[tailNumber] += count;
         });
 
         const { hot, cold } = this.extractHotAndCold(
@@ -98,11 +98,11 @@ export default class LotteryStatisticConsumer {
         const stats = this.initEmptyStats();
 
         Object.keys(twoDigits).forEach((number) => {
-            stats.twoDigitsNumbers[number] = twoDigits[number]; // NOSONAR
+            stats.twoDigitsNumbers[number] = twoDigits[number];
         });
 
         Object.keys(seventh).forEach((number) => {
-            stats.seventh[number] = seventh[number]; // NOSONAR
+            stats.seventh[number] = seventh[number];
         });
 
         stats.others = others;
@@ -115,11 +115,11 @@ export default class LotteryStatisticConsumer {
 
     initEmptyStats() {
         const stats = {
-            head: [],
-            tail: [],
-            seventh: [],
-            special: [],
-            twoDigitsNumbers: [],
+            head: {},
+            tail: {},
+            seventh: {},
+            special: {},
+            twoDigitsNumbers: {},
             others: {
                 odd: 0,
                 even: 0,
