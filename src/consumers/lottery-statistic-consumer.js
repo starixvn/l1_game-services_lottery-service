@@ -115,11 +115,11 @@ export default class LotteryStatisticConsumer {
 
     initEmptyStats() {
         const stats = {
-            head: [],
-            tail: [],
-            seventh: [],
-            special: [],
-            twoDigitsNumbers: [],
+            head: {},
+            tail: {},
+            seventh: {},
+            special: {},
+            twoDigitsNumbers: {},
             others: {
                 odd: 0,
                 even: 0,

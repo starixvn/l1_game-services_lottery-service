@@ -2,10 +2,12 @@ import { RandomHelper } from "../../helpers";
 import generatorDefinition from "../generator-definition";
 import LotteryNumberGenerator from "../lottery-number-generator";
 
+const gameData = { gameConfigs: { randomMode: 1 } };
+
 describe("lottery number generate test", () => {
     it("should generate total of prizes correctly", () => {
         // arrange
-        const generator = new LotteryNumberGenerator(generatorDefinition, RandomHelper);
+        const generator = new LotteryNumberGenerator(generatorDefinition, RandomHelper, gameData);
         const { prizes } = generatorDefinition;
 
         // act
@@ -17,9 +19,11 @@ describe("lottery number generate test", () => {
         });
     });
 
-    it("result of specific prize should match required length", () => {
+    const randomModes = [1, 2, 3, 4];
+    it.each(randomModes)("result of specific prize should match required length", (randomMode) => {
         // arrange
-        const generator = new LotteryNumberGenerator(generatorDefinition, RandomHelper);
+        gameData.gameConfigs.randomMode = randomMode;
+        const generator = new LotteryNumberGenerator(generatorDefinition, RandomHelper, gameData);
         const { prizes } = generatorDefinition;
 
         // act
@@ -33,7 +37,7 @@ describe("lottery number generate test", () => {
 
     it("total of two digit numbers should be correct", () => {
         // arrange
-        const generator = new LotteryNumberGenerator(generatorDefinition, RandomHelper);
+        const generator = new LotteryNumberGenerator(generatorDefinition, RandomHelper, gameData);
 
         // act
         const generatedBoard = generator.generate();
@@ -82,7 +86,7 @@ describe("generator format number test", () => {
 describe("generator reload test", () => {
     it("should update statistics correctly", () => {
         // arrange
-        const generator = new LotteryNumberGenerator(generatorDefinition, RandomHelper);
+        const generator = new LotteryNumberGenerator(generatorDefinition, RandomHelper, gameData);
         const generatedBoard = generator.generate();
 
         // act

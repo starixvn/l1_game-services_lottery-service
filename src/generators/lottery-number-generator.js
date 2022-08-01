@@ -1,5 +1,3 @@
-import Chance from "chance";
-
 import { RandomHelper } from "./../helpers/";
 import generatorDefinition from "./generator-definition";
 
@@ -8,10 +6,10 @@ export default class LotteryNumberGenerator {
      * @param {generatorDefinition} boardDefinition
      * @param {RandomHelper} randomHelper
      */
-    constructor(boardDefinition, randomHelper) {
+    constructor(boardDefinition, randomHelper, gameData) {
         this.randomHelper = randomHelper;
         this.definition = boardDefinition ?? generatorDefinition;
-        this.chance = new Chance();
+        this.gameData = gameData;
     }
 
     generate() {
@@ -20,10 +18,10 @@ export default class LotteryNumberGenerator {
 
         Object.keys(prizes).forEach((name) => {
             const { max, total } = prizes[name];
-            const mode = this.chance.integer({ min: 1, max: 3 });
+            const { randomMode } = this.gameData.gameConfigs;
 
             for (let index = 0; index < total; index++) {
-                const number = this.randomHelper.randomNumber(max, mode);
+                const number = this.randomHelper.randomNumber(max, randomMode);
 
                 this.updateStatistics(generatedBoard, name, number);
             }
