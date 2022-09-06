@@ -7,15 +7,15 @@ export default class LotteryHistoryQuery extends HistoryQuery {
             return {};
         }
 
-        const filter = { uid: player.UID, thanhtoan: true };
+        const filter = { uid: player.UID, paid: true };
         const numberOfSkippedBets = (page - 1) * pageSize;
         const total = await this.betsRepository.countDocuments(filter).exec();
         const betProjection = {
             _id: false,
             uid: false,
-            thanhtoan: false,
+            paid: false,
             siteId: false,
-            memberId: false,
+            playerId: false,
             __v: false,
             __archive: false,
         };
@@ -28,8 +28,8 @@ export default class LotteryHistoryQuery extends HistoryQuery {
         if (bets && bets.length > 0) {
             betLogs = await Promise.all(
                 bets.map(async (bet) => {
-                    const round = await this.roundQuery.getOne(bet.phien, { _id: false });
-                    const betLogDetails = this.betLogsRepository ? await this.getBetLogDetails(player, bet.phien) : [];
+                    const round = await this.roundQuery.getOne(bet.roundId, { _id: false });
+                    const betLogDetails = this.betLogsRepository ? await this.getBetLogDetails(player, bet.roundId) : [];
 
                     return {
                         ...this.convertBet(bet),
@@ -46,7 +46,7 @@ export default class LotteryHistoryQuery extends HistoryQuery {
 
     getBetLogDetails(player, roundId) {
         return this.betLogsRepository
-            .find({ phien: roundId, uid: player.UID }, { _id: false, time: true, choices: true }, { sort: { _id: -1 } })
+            .find({ roundId, uid: player.UID }, { _id: false, time: true, choices: true }, { sort: { _id: -1 } })
             .lean()
             .exec();
     }
