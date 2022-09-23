@@ -35,6 +35,7 @@ const schema = new mongoose.Schema({
     operatorId: { type: String, required: false },
     roundId: { type: Number, required: true },
     paid: { type: Boolean, default: false },
+    playerId: { type: Number },
 });
 
 const betLogsSchema = new mongoose.Schema({
@@ -49,6 +50,8 @@ const betLogsSchema = new mongoose.Schema({
 
     currency: { type: String, require: true },
     rate: { type: Number, require: true },
+    playerId: { type: Number },
+
     operatorId: { type: String, required: false },
     roundId: { type: Number, required: true },
 });

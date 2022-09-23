@@ -18,5 +18,4 @@ COPY --from=builder /app .
 
 HEALTHCHECK --interval=10s CMD node --es-module-specifier-resolution=node healthcheck.js
 
-EXPOSE 5000
 CMD [ "node", "--es-module-specifier-resolution=node", "./app.js" ]

@@ -1,4 +1,3 @@
-import mongoose from "mongoose";
 import { HistoryQuery } from "sc-game-base/src/core/query-apis";
 
 export default class LotteryHistoryQuery extends HistoryQuery {
@@ -28,6 +27,8 @@ export default class LotteryHistoryQuery extends HistoryQuery {
         if (bets && bets.length > 0) {
             betLogs = await Promise.all(
                 bets.map(async (bet) => {
+                    bet.phien = bet.roundId;
+
                     const round = await this.roundQuery.getOne(bet.roundId, { _id: false });
                     const betLogDetails = this.betLogsRepository ? await this.getBetLogDetails(player, bet.roundId) : [];
 
