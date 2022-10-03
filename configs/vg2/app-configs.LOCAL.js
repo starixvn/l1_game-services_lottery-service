@@ -2,19 +2,19 @@ export default {
     hostingPort: 5000,
     apiSettings: {
         enabledApi: true,
-        apiUrl: "http://l1_game_api_AWS:5000",
-        authUrl: "http://l1_auth_api_AWS:5000",
+        apiUrl: "http://l2_game_api_local:5000",
+        authUrl: "http://l2_auth_api_local:5000",
         client: {
             id: "game-server",
             secret: "gameserver@20luminet&",
         },
         useAuthenticate: true,
-        placeBetTimeout: 4500,
-        requestTimeout: 10000, // 10s
+        requestTimeout: 10000,
+        placeBetTimeout: 4000,
         enabledApiLogs: true,
     },
     authenticateSettings: {
-        url: "http://l1_auth_api_AWS:5000",
+        url: "http://l2_auth_api_local:5000",
         id: "game-services",
         secret: "gameservices@20luminet&",
         requestTimeout: 10000,
@@ -22,9 +22,8 @@ export default {
         audiences: ["api", "admin-api"],
     },
     userServiceSettings: {
-        url: "http://localhost:8004/api",
+        url: "http://l2_user_service_local:5000",
     },
-
     socketOptions: {
         pingInterval: 60 * 1000,
         pingTimeout: 60 * 1000,
@@ -33,7 +32,7 @@ export default {
     },
     enabledLogs: true,
     database: {
-        url: "mongodb://lmn_backend:Sb%7B5r%40Xy4X%256%28%24%5Bt%252HsOxJ%7CQt9jdR%26t@10.99.99.56:27101/?replicaSet=L1_SabaAWS",
+        url: "mongodb://lmn_backend:LmnBackend@10.10.50.13:37101/?replicaSet=L2Local&appName=Lottery",
         options: {
             dbName: "minigame",
             useNewUrlParser: true,
@@ -42,11 +41,15 @@ export default {
         },
     },
     sentry: {
-        sentryUrl: "https://58fc00e79ab34a3bab04a79038760cb8@sentry.sabagame.com/8",
+        sentryUrl: "https://a5c85e9a86a342eb95353093079c926f@sentryuat.sabagame.com/55",
         logIdentifier: "lottery",
-        env: "AWS",
+        env: "LOCAL",
     },
-    adminSecretKey: "asWDEer4yGdgsdqR4uqmKQZgh",
+    adminSecretKey: "asWDEerfOIdgsdqRTFabvmgh",
     enableCorsWs: true,
-    corsUrls: ["https://sc1-games.sportsfun.app", "https://sc1-adm.sportsfun.app"],
+    corsUrls: ["http://localhost:7456", "http://localhost:7000", "https://l2-games.lumigame.com", "https://l2-admin.lumigame.com"],
+    metrics: {
+        enable: true,
+        secretKey: "6c1f0f28-70f2-46ae-b031-22624a6cd8df",
+    },
 };
