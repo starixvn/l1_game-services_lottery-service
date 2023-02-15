@@ -47,15 +47,7 @@ export default {
         env: "UAT",
     },
     adminSecretKey: "asWDEerfOIdgsdqRTFabvmgh",
-    enableCorsWs: true,
-    corsUrls: [
-        "http://l2uat.sgamesuat.com",
-        "https://l2uat.sgamesuat.com",
-        "http://l2uatadm.sgamesuat.com",
-        "https://l2uatadm.sgamesuat.com",
-        "http://l2uatm.sgamesuat.com",
-        "https://l2uatm.sgamesuat.com",
-    ],
+    disableCors: false,
     metrics: {
         enable: true,
         secretKey: "6c1f0f28-70f2-46ae-b031-22624a6cd8df",
