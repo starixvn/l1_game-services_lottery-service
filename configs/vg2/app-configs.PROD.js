@@ -47,7 +47,6 @@ export default {
         env: "PROD",
     },
     adminSecretKey: "asWDEer4yGdgsdqR4uqmKQZgh",
-    disableCors: false,
     metrics: {
         enable: true,
         secretKey: "30d15293-c7de-4c77-9293-b85d6c5bfe1a",

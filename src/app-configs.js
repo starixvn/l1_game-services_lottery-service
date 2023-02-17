@@ -46,5 +46,4 @@ export default {
         env: "LOCAL",
     },
     adminSecretKey: "asWDEerfOIdgsdqRTFabvmgh",
-    disableCors: true,
 };

@@ -32,7 +32,7 @@ export default {
     },
     enabledLogs: true,
     database: {
-        url: "mongodb://lmn_backend:LmnBackend@10.10.50.13:37104/?replicaSet=L2pLocal&appName=Lottery",
+        url: "mongodb://lmn_backend:LmnBackend@10.10.50.12:39201,10.10.50.13:39201,10.10.50.14:39201/?replicaSet=L2pLocal&appName=Lottery",
         options: {
             dbName: "minigame",
             useNewUrlParser: true,
@@ -46,7 +46,6 @@ export default {
         env: "LOCAL-1",
     },
     adminSecretKey: "asWDEerfOIdgsdqRTFabvmgh",
-    disableCors: false,
     metrics: {
         enable: true,
         secretKey: "6c1f0f28-70f2-46ae-b031-22624a6cd8df",

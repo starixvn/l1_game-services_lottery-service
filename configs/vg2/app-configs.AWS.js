@@ -47,5 +47,4 @@ export default {
         env: "AWS",
     },
     adminSecretKey: "asWDEer4yGdgsdqR4uqmKQZgh",
-    disableCors: false,
 };
