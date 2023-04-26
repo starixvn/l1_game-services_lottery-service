@@ -2,9 +2,6 @@ variables:
   SMOKE_PRODUCT_NAME: Lottery
 
 include:
-  - project: "ci/repos-ci/pentagon_l1_lottery_service"
-    ref: master
-    file: "gitlab-ci.yml"
-  - project: "ci/repos-ci/pentagon_l2_lottery_service"
-    ref: master
-    file: "gitlab-ci-mixing.yml"
+  - project: ci/core-cicd
+    ref: main
+    file: luminet.gitlab-ci.yml
