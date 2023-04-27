@@ -49,6 +49,10 @@ describe("Running 10000 rounds", () => {
             stats.others.small += result.others.small ? 1 : 0;
         }
 
+        expect(stats.others.odd / totalRounds).toBeGreaterThanOrEqual(0.49);
+        expect(stats.others.even / totalRounds).toBeGreaterThanOrEqual(0.49);
+        expect(stats.others.big / totalRounds).toBeGreaterThanOrEqual(0.49);
+        expect(stats.others.small / totalRounds).toBeGreaterThanOrEqual(0.49);
         console.log(`======== Run ${totalRounds} rounds for mode ${mode} ========`);
         console.log(stats);
     });
