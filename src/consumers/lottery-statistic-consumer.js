@@ -243,7 +243,7 @@ export default class LotteryStatisticConsumer {
         const hot = {};
         const cold = {};
 
-        for (let index = 0; index < items.length; index++) {
+        for (let index = 0; index < Object.keys(items).length; index++) {
             const count = items[index];
 
             if (count > this.hotFrequency) {

@@ -40,6 +40,8 @@ describe("updateStats test", () => {
         expect(Object.keys(stats.hot.parlays).length).toBe(10);
         expect(Object.keys(stats.hot.special).length).toBe(10);
         expect(Object.keys(stats.hot.seventh).length).toBe(10);
+        expect(Object.keys(stats.hot.head).length).toBe(1);
+        expect(Object.keys(stats.hot.tail).length).toBe(1);
     });
 
     it("should return 10 cold numbers", () => {
@@ -57,6 +59,8 @@ describe("updateStats test", () => {
         expect(Object.keys(stats.cold.parlays).length).toBe(10);
         expect(Object.keys(stats.cold.special).length).toBe(10);
         expect(Object.keys(stats.cold.seventh).length).toBe(10);
+        expect(Object.keys(stats.cold.head).length).toBe(9);
+        expect(Object.keys(stats.cold.tail).length).toBe(9);
     });
 
     it("total values of head, tail, special should be correct", () => {
