@@ -1,69 +1,51 @@
 import Chance from "chance";
 import { randomInt } from "mathjs";
 import random from "random";
+import { randomInt as randomInt1 } from "crypto";
+import { Random as RandomJS, MersenneTwister19937 } from "random-js";
+
+const chance = new Chance();
+
+export const mathRandom = () => {
+    return Math.random(); // NOSONAR
+};
 
 const random1 = (max) => {
-    const chance = new Chance();
-    return chance.integer({ min: 0, max: max });
+    return Math.floor(mathRandom() * max);
 };
 
 const random2 = (max) => {
-    return random.int(0, max);
+    return chance.integer({ min: 0, max });
 };
 
 const random3 = (max) => {
+    return random.int(0, max);
+};
+
+const random4 = (max) => {
     return randomInt(0, max);
 };
 
-function random4(max) {
-    const chance = new Chance();
-    const mode = chance.integer({ min: 1, max: 3 });
+const random5 = (max) => {
+    const randomJS = new RandomJS(MersenneTwister19937.autoSeed());
 
-    switch (mode) {
-        case 2:
-            return random2(max);
-        case 3:
-            return random3(max);
-        case 1:
-        default:
-            return random1(max);
-    }
-}
+    return randomJS.integer(0, max);
+};
 
-function random5(max) {
-    const chance = new Chance();
-    const mode = chance.integer({ min: 1, max: 3 });
+const random6 = (max) => {
+    return randomInt1(max + 1);
+};
 
-    switch (mode) {
-        case 2:
-            return random3(max);
-        case 3:
-            return random1(max);
-        case 1:
-        default:
-            return random2(max);
-    }
-}
-
-function random6(max) {
-    const chance = new Chance();
-    const mode = chance.integer({ min: 1, max: 3 });
-
-    switch (mode) {
-        case 2:
-            return random1(max);
-        case 3:
-            return random2(max);
-        case 1:
-        default:
-            return random3(max);
-    }
-}
+const random7 = (max) => {
+    const seed = Math.floor(mathRandom() * 100000);
+    const randomJS = new RandomJS(MersenneTwister19937.seed(seed));
+    return randomJS.integer(0, max);
+};
 
 const randomModes = {
-    1: [random4],
-    2: [random5],
-    3: [random6],
+    1: [random1, random2, random3, random4],
+    2: [random4, random5, random6, random7],
+    3: [random1, random3, random5, random7],
 };
 
 export const randomNumber = (max, randomMode) => {

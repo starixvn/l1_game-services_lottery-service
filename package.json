@@ -29,6 +29,7 @@
         "mathjs": "^9.3.2",
         "nodemon": "^2.0.4",
         "random": "^3.0.3",
+        "random-js": "^2.1.0",
         "sc-game-base": "3.3.0"
     },
     "devDependencies": {

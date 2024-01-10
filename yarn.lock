@@ -7837,7 +7837,6 @@ npm@^6.14.9:
     cmd-shim "^3.0.3"
     columnify "~1.5.4"
     config-chain "^1.1.13"
-    debuglog "*"
     detect-indent "~5.0.0"
     detect-newline "^2.1.0"
     dezalgo "^1.0.4"
@@ -7852,7 +7851,6 @@ npm@^6.14.9:
     has-unicode "~2.0.1"
     hosted-git-info "^2.8.9"
     iferr "^1.0.2"
-    imurmurhash "*"
     infer-owner "^1.0.4"
     inflight "~1.0.6"
     inherits "^2.0.4"
@@ -7871,14 +7869,8 @@ npm@^6.14.9:
     libnpx "^10.2.4"
     lock-verify "^2.2.2"
     lockfile "^1.0.4"
-    lodash._baseindexof "*"
     lodash._baseuniq "~4.6.0"
-    lodash._bindcallback "*"
-    lodash._cacheindexof "*"
-    lodash._createcache "*"
-    lodash._getnative "*"
     lodash.clonedeep "~4.5.0"
-    lodash.restparam "*"
     lodash.union "~4.6.0"
     lodash.uniq "~4.5.0"
     lodash.without "~4.4.0"
@@ -8741,6 +8733,11 @@ qw@^1.0.2:
   resolved "http://npm.lumigame.com/qw/-/qw-1.0.2.tgz#0c31a6f810320a91c58b05198679427103b03c4a"
   integrity sha512-1PhZ/iLKwlVNq45dnerTMKFjMof49uqli7/0QsvPNbX5OJ3IZ8msa9lUpvPheVdP+IYYPrf6cOaVil7S35joVA==
 
+random-js@^2.1.0:
+  version "2.1.0"
+  resolved "http://npm.lumigame.com/random-js/-/random-js-2.1.0.tgz#0c03238b0a4f701f7a4c7303036ade3083d8ee14"
+  integrity sha512-CRUyWmnzmZBA7RZSVGq0xMqmgCyPPxbiKNLFA5ud7KenojVX2s7Gv+V7eB52beKTPGxWRnVZ7D/tCIgYJJ8vNQ==
+
 random@^3.0.3:
   version "3.0.3"
   resolved "http://npm.lumigame.com/random/-/random-3.0.3.tgz"
@@ -9346,7 +9343,7 @@ sc-game-base@3.3.0:
     socket.io-msgpack-parser "^3.0.1"
     socket.io-prom-metrics "^1.0.3"
 
-sc-semantic-release@^1.3.0:
+sc-semantic-release@^1.1.0:
   version "1.3.0"
   resolved "http://npm.lumigame.com/sc-semantic-release/-/sc-semantic-release-1.3.0.tgz#3f1a98887fce528031e0891f376f5e8e0cb9c731"
   integrity sha512-mbqN7ehzwVELq0aAns4ONTPMGkJh6pDgfA+2r3DiRVVX1viiVRbj3zpxT5yhSB8KuKE5hbUAgULYAEH+fsEBMg==

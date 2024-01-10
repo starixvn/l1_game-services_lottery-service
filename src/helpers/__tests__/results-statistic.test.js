@@ -5,9 +5,9 @@ import { getSettlementResult } from "../result-helper";
 const gameData = { gameConfigs: { randomMode: 1 } };
 const numberGenerator = new LotteryNumberGenerator(null, RandomHelper, gameData);
 
-describe("Running 10000 rounds", () => {
+describe("Running 100,000 rounds", () => {
     it.each([1, 2, 3])("Mode %d", (mode) => {
-        const totalRounds = 10000;
+        const totalRounds = 100_000;
         gameData.gameConfigs.randomMode = mode;
 
         const stats = {
