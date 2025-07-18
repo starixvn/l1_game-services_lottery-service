@@ -34,7 +34,7 @@
     },
     "resolutions": {
         "sc-base-apis": "1.18.2",
-        "sc-base-database": "1.11.1"
+        "sc-base-database": "1.11.3"
     },
     "devDependencies": {
         "@babel/preset-env": "^7.12.11",
